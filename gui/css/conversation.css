@@ -6,6 +6,9 @@ div#conversation {
 div#historial {
     width: 100%;
     height: 300px;
+    max-height: 300px;
+    overflow-x: hidden;
+    overflow-y: auto;
     border: 1px rgba(0,0,0,0.15) solid;
     -webkit-border-top-left-radius: 1em;
     -webkit-border-top-right-radius: 1em;
@@ -44,13 +47,33 @@ div#interact > .row [class='col-md-1'] {
     height: 146px;
 }
 
+div#historial > .row {
+    padding: 1em 0;
+}
+
+div#historial > .row [class='col-md-1'] {
+    text-align: right;
+}
+
+div#historial .identifier {
+    font-weight: bold;
+}
+
+div#historial .identifier[whoami='bot'] {
+    color: #8e44ad;
+}
+
+div#historial .identifier::after {
+    content: ":";
+}
+
 div#interact textarea {
     width: 100%;
     border: 0;
     margin: 0px;
     height: 146px;
     max-height: 146px;
-    overflow-x: none;
+    overflow-x: hidden;
     overflow-y: auto;
     resize: none;
     padding: 1em;
