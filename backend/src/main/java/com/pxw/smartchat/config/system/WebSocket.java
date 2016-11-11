@@ -1,4 +1,4 @@
-package com.pxw.smartchat.config;
+package com.pxw.smartchat.config.system;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -8,7 +8,12 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 
 @Configuration
 @EnableWebSocketMessageBroker
-public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
+public class WebSocket extends AbstractWebSocketMessageBrokerConfigurer {
+    /*
+        This value is set to allow files not-in-server routes (as file://xxxxx)
+        can make calls to the server. This variable should be removed once the UI
+        is set as a symlink in the web server.
+     */
     private final String ALLOWED_ORIGINS_PATTERN = "*";
 
     @Override

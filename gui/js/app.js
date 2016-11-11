@@ -18,8 +18,11 @@ function connect() {
     stompClient.connect({}, function (frame) {
         setConnected(true);
         console.log('Connected: ' + frame);
-        stompClient.subscribe('/topic/greetings', function (greeting) {
-            showGreeting(JSON.parse(greeting.body).content);
+        stompClient.subscribe('/topic/user/message/received', function (message) {
+            renderBotReply(JSON.parse(message.body));
+        });
+        stompClient.subscribe('/topic/bot/writing', function(rawStatus) {
+            renderState(JSON.parse(rawStatus.body));
         });
     });
 }
@@ -33,11 +36,50 @@ function disconnect() {
 }
 
 function sendName() {
-    stompClient.send("/app/hello", {}, JSON.stringify({'name': "Camilo"}));
+    var msgBody = $("#user-message-body").val();
+    var message = {'body': msgBody};
+    renderUserReply(message);
+    stompClient.send("/app/bot/reply", {}, JSON.stringify(message));
+    $("#user-message-body").val("");
 }
 
-function showGreeting(message) {
-    $("#test").append("<tr><td>" + message + "</td></tr>");
+function renderBotReply(message) {
+    var createdAt = message.createdAt.epochSecond;
+    var row = $(sprintf("<div class=\"row\" created-at=\"%s\"></div>", createdAt));
+    var identifier = $("<div class=\"col-md-1\"><span class=\"identifier\" whoami=\"bot\">Bot</span></div>");
+    var message = $(sprintf("<div class=\"col-md-11\"><p>%s</p></div>", message.body));
+
+    identifier.appendTo(row);
+    message.appendTo(row);
+    row.appendTo("#historial");
+
+    historialBottomScroll();
+    clearState();
+}
+
+function renderUserReply(message) {
+    var row = $("<div class=\"row\"></div>");
+    var identifier = $("<div class=\"col-md-1\"><span class=\"identifier\" whoami=\"user\">User</span></div>");
+    var message = $(sprintf("<div class=\"col-md-11\"><p>%s</p></div>", message.body));
+
+    identifier.appendTo(row);
+    message.appendTo(row);
+    row.appendTo("#historial");
+
+    historialBottomScroll();
+}
+
+function renderState(status) {
+    $("#status-bar > span").html(status.body);
+}
+
+function clearState() {
+    $("#status-bar > span").html("");
+}
+
+function historialBottomScroll() {
+    var historial = $("#historial");
+    historial.stop(true, true).animate({ scrollTop: historial.prop("scrollHeight") - historial.height() }, 200);
 }
 
 $(function () {
