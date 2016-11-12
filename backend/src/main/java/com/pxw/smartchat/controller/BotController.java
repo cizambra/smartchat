@@ -1,8 +1,10 @@
 package com.pxw.smartchat.controller;
 
+import com.pxw.smartchat.config.bot.Bot;
 import com.pxw.smartchat.config.bot.Reply;
 import com.pxw.smartchat.config.system.Route;
 import com.pxw.smartchat.model.Message;
+import com.pxw.smartchat.model.StateMachineRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -13,6 +15,8 @@ import org.springframework.stereotype.Controller;
 public class BotController {
     private SimpMessagingTemplate template;
 
+    StateMachineRunner smr = new StateMachineRunner();
+
     @Autowired
     public BotController(SimpMessagingTemplate template) {
         this.template = template;
@@ -20,9 +24,13 @@ public class BotController {
 
     @MessageMapping(Route.BOT_REPLY)
     @SendTo(Route.USER_MSG_RECEIVED)
-    public Message sendReply(Message userMessage) throws Exception {
+    public Message sendReply(final Message userMessage) throws Exception {
         sendStatus();
-        Thread.sleep(1000); // We want to simulate delay for UX improvement.
+
+        // Test state machine.
+        smr.run();
+
+        Bot.simulateWriting(userMessage.getBody());
         return new Message(userMessage.getBody());
     }
 
