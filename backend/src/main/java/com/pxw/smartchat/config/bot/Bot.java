@@ -1,6 +1,5 @@
 package com.pxw.smartchat.config.bot;
 
-import com.pxw.smartchat.model.ChatMessage;
 import lombok.NonNull;
 
 import java.util.concurrent.ThreadLocalRandom;
