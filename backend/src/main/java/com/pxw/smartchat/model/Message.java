@@ -5,6 +5,11 @@ import lombok.NonNull;
 
 import java.time.Instant;
 
+/**
+ * General purpose message, this message can be sent
+ * to different topics and be received by different subscribers in
+ * the UI.
+ */
 @NoArgsConstructor
 public class Message {
     private @NonNull String body;
@@ -14,7 +19,11 @@ public class Message {
         this.body = body;
     }
 
-    public String getBody() { return body; }
+    public String getBody() {
+        return body;
+    }
 
-    public Instant getCreatedAt() { return createdAt; }
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
 }

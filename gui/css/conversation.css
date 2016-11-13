@@ -58,7 +58,7 @@ div#historial .identifier {
     font-weight: bold;
 }
 
-div#historial .identifier[whoami='bot'] {
+div#historial .row[whoami='bot'] .identifier {
     color: #8e44ad;
 }
 

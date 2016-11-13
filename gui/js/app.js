@@ -1,6 +1,16 @@
 var stompClient = null;
 var userCanSendMessage = true;
 
+var Routes = {
+    // Endpoints for Client - Server messages (@MessageMapping URIs).
+    HALO: "/app/bot/halo",
+    INCOMING_USER_MSG: "/app/bot/new_message",
+
+    // Endpoints for Server - Client messages (@SendTo URIs).
+    INCOMING_BOT_MSG: "/topic/user/message/received",
+    BOT_WRITING: "/topic/bot/writing"
+};
+
 $(document).ready(function () {
     connect();
     $( "#send" ).click(function() {
@@ -20,14 +30,15 @@ function connect() {
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function (frame) {
         console.log('Connected: ' + frame);
-        stompClient.subscribe('/topic/user/message/received', function (message) {
+        stompClient.subscribe(Routes.INCOMING_BOT_MSG, function (message) {
             renderBotReply(JSON.parse(message.body));
             toggleInteraction();
         });
-        stompClient.subscribe('/topic/bot/writing', function(rawStatus) {
+        stompClient.subscribe(Routes.BOT_WRITING, function(rawStatus) {
             renderState(JSON.parse(rawStatus.body));
             toggleInteraction();
         });
+        stompClient.send(Routes.HALO, {}, "");
     });
 }
 
@@ -45,10 +56,12 @@ function generateReply(message, whoami) {
     var createdAt = (message.createdAt) ? message.createdAt.epochSecond : null;
     var capsWhoami = s.capitalize(whoami);
     var parsedBody = parse(message.body);
+    var state = message.state;
 
-    var row = $(sprintf("<div class=\"row\" created-at=\"%s\"></div>", createdAt));
+    var rowTemplate = "<div class=\"row\" created-at=\"%s\" whoami=\"%s\" state=\"%s\"></div>";
+    var row = $(sprintf(rowTemplate, createdAt, whoami, state));
     var identifierCol = $("<div class=\"col-md-1\"></div>");
-    var identifier = $(sprintf("<span class=\"identifier\" whoami=\"%s\">%s</span>", whoami, capsWhoami));
+    var identifier = $(sprintf("<span class=\"identifier\" >%s</span>", capsWhoami));
     var message = $(sprintf("<div class=\"col-md-11\"><p>%s</p></div>", parsedBody));
 
     identifier.appendTo(identifierCol);
@@ -95,10 +108,11 @@ function messageInTextarea() {
 }
 
 function sendUserMessage() {
+    var lastBotState = $(".row[whoami=bot]").last().attr("state");
     var msgBody = $("#user-message-body").val();
-    var message = {'body': msgBody};
+    var message = {'body': msgBody, 'state':lastBotState };
     renderUserReply(message);
-    stompClient.send("/app/bot/reply", {}, JSON.stringify(message));
+    stompClient.send(Routes.INCOMING_USER_MSG, {}, JSON.stringify(message));
     $("#user-message-body").val("");
 }
 
