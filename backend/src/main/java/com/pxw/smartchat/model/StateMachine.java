@@ -1,11 +1,14 @@
 package com.pxw.smartchat.model;
 
+import com.pxw.smartchat.model.processing.Parser;
+import com.pxw.smartchat.model.processing.ParserFactory;
 import lombok.NonNull;
 
 import java.util.Locale;
+import static com.pxw.smartchat.model.processing.ParserFactory.ParserType;
 
 public enum StateMachine {
-    CONVERSATION_STARTED() {
+    CONVERSATION_STARTED {
         // The system checks if user message is a question.
         @Override
         protected ChatMessage runState(ChatMessage message) {
@@ -17,23 +20,26 @@ public enum StateMachine {
         }
 
         private Boolean isQuestion(final @NonNull String content) {
-            return true;
+            final Parser questionParser = this.contextParser.getParser(ParserType.QUESTION.name());
+            return questionParser.matches(content);
         }
     },
 
-    IS_QUESTION() {
+    IS_QUESTION {
         @Override
         protected ChatMessage runState(ChatMessage message) {
             return new ChatMessage("Question behavior.", name());
         }
     },
 
-    IS_NOT_QUESTION() {
+    IS_NOT_QUESTION {
         @Override
         protected ChatMessage runState(ChatMessage message) {
             return null;
         }
     };
+
+    protected ParserFactory contextParser = new ParserFactory();
 
     public static ChatMessage processMessage(final @NonNull ChatMessage message) {
         final String stateName = message.getState().toUpperCase(Locale.ENGLISH);

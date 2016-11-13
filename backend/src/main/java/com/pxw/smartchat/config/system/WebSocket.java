@@ -1,6 +1,5 @@
-package com.pxw.smartchat.config.system.websocket;
+package com.pxw.smartchat.config.system;
 
-import com.pxw.smartchat.config.system.Route;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.AbstractWebSocketMessageBrokerConfigurer;

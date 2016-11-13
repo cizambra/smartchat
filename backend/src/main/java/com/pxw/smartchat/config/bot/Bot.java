@@ -13,8 +13,7 @@ public class Bot {
     public enum Status {
         WRITING("Bot is writing a message...");
 
-        private @NonNull
-        String message;
+        private @NonNull String message;
 
         Status(final @NonNull String message) {
             this.message = message;
@@ -51,9 +50,8 @@ public class Bot {
      */
     public static void simulateWriting(final String message) throws Exception {
         final Integer responseTime = message.length() * Behavior.KEYSTOKE_DELAY_MILLI;
-        final Integer stdDeviation = 10;
-        final Integer lowerBound = responseTime - stdDeviation;
-        final Integer upperBound = responseTime + stdDeviation;
+        final Integer lowerBound = responseTime - 10;
+        final Integer upperBound = responseTime + 10;
         final Integer responseDelay = ThreadLocalRandom.current().nextInt(lowerBound, upperBound + 1);
         Thread.sleep(responseDelay);
     }

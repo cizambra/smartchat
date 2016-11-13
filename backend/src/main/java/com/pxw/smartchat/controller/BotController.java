@@ -13,7 +13,7 @@ import org.springframework.stereotype.Controller;
 
 @Controller
 public class BotController {
-    private final String STARTING_STATE = "CONVERSATION_STARTED";
+    private final String STARTING_STATE = StateMachine.CONVERSATION_STARTED.name();
 
     @Autowired
     private SimpMessagingTemplate template;
