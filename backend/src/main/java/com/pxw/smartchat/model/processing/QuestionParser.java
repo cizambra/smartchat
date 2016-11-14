@@ -12,13 +12,12 @@ public class QuestionParser implements Parser {
 
     @Override
     public Boolean matches(final @NonNull String content) {
-        // Now create matcher object.
         final Matcher m = compiledPattern.matcher(content);
         return m.matches();
     }
 
     @Override
-    public String extractPayload(String content) throws ParserException {
+    public String getPayloadFrom(String content) throws ParserException {
         final Matcher m = compiledPattern.matcher(content);
 
         if (!m.find()) {

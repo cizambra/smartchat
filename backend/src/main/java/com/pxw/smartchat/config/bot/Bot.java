@@ -25,10 +25,22 @@ public class Bot {
 
     /**
      * This is a list of static messages that the bot is able to say without
-     * the usage of a knowledge base.
+     * the usage of a librarian base.
      */
     public enum Response {
-        WELCOME("Hi I'm PO Bot, how can I help you?");
+        WELCOME("Hi I'm PO Bot, how can I help you?"),
+        ANSWER_FROM_CACHE("Your question is: %s\nThe answer provided is %s.\nIf I can help you with something " +
+                "else, please provide me a new question."),
+        ANSWER_FROM_CACHE_NOT_EXISTS("Something odd has happened, I cannot find the answer to this question! " +
+                "Can you email my team and let them know that I was unable to find the answer to this question?\n" +
+                "In the meantime, if I can help you with something else, please provide me a new question."),
+        ANSWER_FROM_BASE("Your question is: %s\nThe answer provided is %s.\nIf I can help you with something else, " +
+                "please provide me a new question."),
+        ANSWER_FROM_BASE_NOT_EXISTS("I couldn't find your answer in our knowledge base, if you really need to answer " +
+                "this question, please email my team with your question. In the meantime, if I can " +
+                "help you with something else, please provide me a new question."),
+        NOT_A_QUESTION("Well, it seems that it is not a question. If I can help you with something else, " +
+                "please provide me a new question.");
 
         private @NonNull String message;
 

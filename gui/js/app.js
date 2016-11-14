@@ -57,9 +57,10 @@ function generateReply(message, whoami) {
     var capsWhoami = s.capitalize(whoami);
     var parsedBody = parse(message.body);
     var state = message.state;
+    var domain = message.domain;
 
-    var rowTemplate = "<div class=\"row\" created-at=\"%s\" whoami=\"%s\" state=\"%s\"></div>";
-    var row = $(sprintf(rowTemplate, createdAt, whoami, state));
+    var rowTemplate = "<div class=\"row\" created-at=\"%s\" whoami=\"%s\" state=\"%s\" domain=\"%s\"></div>";
+    var row = $(sprintf(rowTemplate, createdAt, whoami, state, domain));
     var identifierCol = $("<div class=\"col-md-1\"></div>");
     var identifier = $(sprintf("<span class=\"identifier\" >%s</span>", capsWhoami));
     var message = $(sprintf("<div class=\"col-md-11\"><p>%s</p></div>", parsedBody));
@@ -108,9 +109,10 @@ function messageInTextarea() {
 }
 
 function sendUserMessage() {
-    var lastBotState = $(".row[whoami=bot]").last().attr("state");
+    var nextState = $(".row[whoami=bot]").last().attr("state");
+    var nextDomain = $(".row[whoami=bot]").last().attr("domain");
     var msgBody = $("#user-message-body").val();
-    var message = {'body': msgBody, 'state':lastBotState };
+    var message = {'body': msgBody, 'state': nextState, 'domain': nextDomain};
     renderUserReply(message);
     stompClient.send(Routes.INCOMING_USER_MSG, {}, JSON.stringify(message));
     $("#user-message-body").val("");

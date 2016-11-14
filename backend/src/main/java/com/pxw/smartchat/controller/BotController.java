@@ -4,7 +4,8 @@ import com.pxw.smartchat.config.bot.Bot;
 import com.pxw.smartchat.config.system.Route;
 import com.pxw.smartchat.model.ChatMessage;
 import com.pxw.smartchat.model.Message;
-import com.pxw.smartchat.model.StateMachine;
+import com.pxw.smartchat.model.statemachine.DefaultStateMachine;
+import com.pxw.smartchat.model.statemachine.StateMachine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -13,7 +14,8 @@ import org.springframework.stereotype.Controller;
 
 @Controller
 public class BotController {
-    private final String STARTING_STATE = StateMachine.CONVERSATION_STARTED.name();
+    private final String STARTING_STATE = DefaultStateMachine.CONVERSATION_STARTED.name();
+    private final String STARTING_DOMAIN = StateMachine.StateMachineType.DEFAULT.name();
 
     @Autowired
     private SimpMessagingTemplate template;
@@ -23,7 +25,7 @@ public class BotController {
     public ChatMessage startConversation() throws Exception {
         final String welcomeMsg = Bot.Response.WELCOME.getMessage();
         waitForBotReply(welcomeMsg);
-        return new ChatMessage(welcomeMsg, STARTING_STATE);
+        return new ChatMessage(welcomeMsg, STARTING_STATE, STARTING_DOMAIN);
     }
 
     @MessageMapping(Route.INCOMING_USER_MSG)

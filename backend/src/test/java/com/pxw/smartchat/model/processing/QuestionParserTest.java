@@ -20,7 +20,7 @@ public class QuestionParserTest {
         final String message = "This is a string!";
         assertFalse(parser.matches(message));
         // Forcing an extraction when the string is not a question.
-        parser.extractPayload(message);
+        parser.getPayloadFrom(message);
     }
 
     @Test
@@ -37,6 +37,6 @@ public class QuestionParserTest {
 
     private void assertQuestion(final @NonNull String message) throws ParserException {
         assertTrue(parser.matches(message));
-        assertEquals("Is this a question?", parser.extractPayload(message));
+        assertEquals("Is this a question?", parser.getPayloadFrom(message));
     }
 }

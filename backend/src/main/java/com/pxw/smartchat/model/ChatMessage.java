@@ -16,13 +16,17 @@ import lombok.NonNull;
 @NoArgsConstructor
 public class ChatMessage extends Message {
     private @NonNull String state;
+    private @NonNull String domain;
 
-    public ChatMessage(@NonNull String body, @NonNull String state) {
+    public ChatMessage(@NonNull String body, @NonNull String state, @NonNull String domain) {
         super(body);
         this.state = state;
+        this.domain = domain;
     }
 
     public String getState() {
         return state;
     }
+
+    public String getDomain() { return domain; }
 }

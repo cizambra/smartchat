@@ -4,5 +4,5 @@ import com.pxw.smartchat.config.exception.ParserException;
 
 public interface Parser {
     Boolean matches(final String content);
-    String extractPayload(final String content) throws ParserException;
+    String getPayloadFrom(final String content) throws ParserException;
 }
