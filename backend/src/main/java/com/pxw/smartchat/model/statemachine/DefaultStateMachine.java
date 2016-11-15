@@ -27,41 +27,96 @@ public enum DefaultStateMachine implements StateMachine {
 
             if (questionParser.matches(message.getBody())) {
                 final String question = questionParser.getPayloadFrom(message.getBody());
-
-                if (librarian.questionExists(question)) {
-                    // Question exists in the cache and the stored answer is retrieved.
-                    try {
-                        final String collectedAnswer = librarian.getAnswerFromCache(question);
-                        final String messageTemplate = Bot.Response.ANSWER_FROM_CACHE.getMessage();
-
-                        reply = String.format(messageTemplate, question, collectedAnswer);
-                    } catch (final AnswerNotFoundException exception) {
-                        reply = Bot.Response.ANSWER_FROM_CACHE_NOT_EXISTS.getMessage();
-                    }
-                    nextState = CONVERSATION_STARTED.name();
-                } else if (librarian.similarQuestionsExist(question)) {
-                    // Similar questions are shown to the user to choose one.
-                    final List<String> questionSet = librarian.getSimilarQuestions(question);
-
-                    reply = String.format("The question was not found, are you trying to answer one of this " +
-                            "questions?\n%s", question);
-                    nextState = USER_CORRECTED_QUESTION.name();
-                } else {
-                    // Looks into the repository to find an answer and register this
-                    // question in the librarian base.
-                    try {
-                        final String collectedAnswer = librarian.getAnswerFromBase(question);
-                        final String messageTemplate = Bot.Response.ANSWER_FROM_BASE.getMessage();
-
-                        reply = String.format(messageTemplate, question, collectedAnswer);
-                    } catch (final AnswerNotFoundException exception) {
-                        reply = Bot.Response.ANSWER_FROM_BASE_NOT_EXISTS.getMessage();
-                    }
-                    nextState = CONVERSATION_STARTED.name();
-                }
+                reply = question;
+                nextState = MESSAGE_IS_QUESTION.name();
             } else {
                 reply = Bot.Response.NOT_A_QUESTION.getMessage();
-                nextState = CONVERSATION_STARTED.name();
+                nextState = MESSAGE_IS_NOT_QUESTION.name();
+            }
+
+            return StateMachine.processMessage(new ChatMessage(reply, nextState, nextDomain));
+        }
+    },
+
+    MESSAGE_IS_QUESTION {
+        @Override
+        public ChatMessage runState(final @NonNull ChatMessage message) throws ParserException {
+            final String question = message.getBody();
+            String nextState, nextDomain = StateMachineType.DEFAULT.name();
+
+            if (librarian.questionExists(question)) {
+                // Question exists in the cache and the stored answer is retrieved.
+                nextState = ANSWER_EXISTS_IN_CACHE.name();
+            } else if (librarian.similarQuestionsExist(question)) {
+                // Similar questions are shown to the user to choose one.
+                nextState = SIMILAR_QUESTIONS_EXIST.name();
+            } else {
+                // Looks into the repository to find an answer and register this
+                // question in the librarian base.
+                nextState = NEW_ANSWER_REQUIRED.name();
+            }
+
+            return StateMachine.processMessage(new ChatMessage(question, nextState, nextDomain));
+        }
+    },
+
+    MESSAGE_IS_NOT_QUESTION {
+        @Override
+        public ChatMessage runState(final @NonNull ChatMessage message) throws ParserException {
+            final String nextState = CONVERSATION_STARTED.name();
+            final String nextDomain = StateMachineType.DEFAULT.name();
+            return new ChatMessage(message.getBody(), nextState, nextDomain);
+        }
+    },
+
+    ANSWER_EXISTS_IN_CACHE {
+        @Override
+        public ChatMessage runState(final @NonNull ChatMessage message) throws ParserException {
+            final String question = message.getBody();
+            final String nextState = CONVERSATION_STARTED.name();
+            final String nextDomain = StateMachineType.DEFAULT.name();
+            String reply;
+
+            try {
+                final String collectedAnswer = librarian.getAnswerFromCache(question);
+                final String messageTemplate = Bot.Response.ANSWER_FROM_CACHE.getMessage();
+                reply = String.format(messageTemplate, question, collectedAnswer);
+            } catch (final AnswerNotFoundException exception) {
+                reply = Bot.Response.ANSWER_FROM_CACHE_NOT_EXISTS.getMessage();
+            }
+
+            return new ChatMessage(reply, nextState, nextDomain);
+        }
+    },
+
+    SIMILAR_QUESTIONS_EXIST {
+        @Override
+        public ChatMessage runState(final @NonNull ChatMessage message) throws ParserException {
+            final String question = message.getBody();
+            final List<String> questionSet = librarian.getSimilarQuestions(question);
+            final String reply = String.format("The question was not found, are you trying to answer one of this " +
+                    "questions?\n%s", question);
+            final String nextState = USER_CORRECTED_QUESTION.name();
+            final String nextDomain = StateMachineType.DEFAULT.name();
+
+            return new ChatMessage(reply, nextState, nextDomain);
+        }
+    },
+
+    NEW_ANSWER_REQUIRED {
+        @Override
+        public ChatMessage runState(final @NonNull ChatMessage message) throws ParserException {
+            final String question = message.getBody();
+            final String nextState = USER_CORRECTED_QUESTION.name();
+            final String nextDomain = StateMachineType.DEFAULT.name();
+            String reply;
+
+            try {
+                final String collectedAnswer = librarian.getAnswerFromBase(question);
+                final String messageTemplate = Bot.Response.ANSWER_FROM_BASE.getMessage();
+                reply = String.format(messageTemplate, question, collectedAnswer);
+            } catch (final AnswerNotFoundException exception) {
+                reply = Bot.Response.ANSWER_FROM_BASE_NOT_EXISTS.getMessage();
             }
 
             return new ChatMessage(reply, nextState, nextDomain);
