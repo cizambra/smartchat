@@ -12,6 +12,7 @@ public enum DefaultStateMachine implements StateMachine {
     NO_ANSWER_FOUND,
     QUESTION_REVIEWED;
 
+    public static String DOMAIN = DefaultStateMachine.class.getName();
     public String getBeanName() {
         return CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, name());
     }

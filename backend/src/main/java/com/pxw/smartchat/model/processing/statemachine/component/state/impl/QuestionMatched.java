@@ -4,6 +4,7 @@ import com.pxw.smartchat.model.messaging.impl.StateMessage;
 import com.pxw.smartchat.model.processing.librarian.Librarian;
 import com.pxw.smartchat.model.processing.statemachine.StateMachine;
 import com.pxw.smartchat.model.processing.statemachine.component.state.State;
+import com.pxw.smartchat.model.processing.statemachine.impl.DefaultStateMachine;
 import lombok.RequiredArgsConstructor;
 
 import static com.pxw.smartchat.model.processing.statemachine.impl.DefaultStateMachine.*;
@@ -29,6 +30,6 @@ public class QuestionMatched implements State {
         }
 
         // Automatic transition to next state.
-        return StateMachine.processMessage(new StateMessage(question, nextState, StateMachineType.DEFAULT.name()));
+        return StateMachine.processMessage(new StateMessage(question, nextState, DefaultStateMachine.DOMAIN));
     }
 }

@@ -3,6 +3,7 @@ package com.pxw.smartchat.model.processing.statemachine.component.state.impl;
 import com.pxw.smartchat.model.messaging.impl.StateMessage;
 import com.pxw.smartchat.model.processing.librarian.Librarian;
 import com.pxw.smartchat.model.processing.statemachine.component.state.State;
+import com.pxw.smartchat.model.processing.statemachine.impl.DefaultStateMachine;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public class SimilarQuestionsFound implements State {
         final String reply = String.format("The question was not found, are you trying to answer one of this " +
                 "questions?\n%s", question);
         final String nextState = QUESTION_REVIEWED.name();
-        final String nextDomain = StateMachineType.DEFAULT.name();
+        final String nextDomain = DefaultStateMachine.DOMAIN;
 
         return new StateMessage(reply, nextState, nextDomain);
     }

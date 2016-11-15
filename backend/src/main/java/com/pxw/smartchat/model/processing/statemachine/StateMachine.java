@@ -12,16 +12,12 @@ import java.util.Locale;
 public interface StateMachine {
     ApplicationContext context = new ClassPathXmlApplicationContext("statemachine.xml");
 
-    enum StateMachineType {
-        DEFAULT
-    }
-
     static StateMessage processMessage(final @NonNull StateMessage message) throws Exception {
         final String stateName = message.getState().toUpperCase(Locale.ENGLISH);
         final String stateMachineType = message.getDomain();
         StateMessage stateOutput;
 
-        if (stateMachineType.equalsIgnoreCase(StateMachineType.DEFAULT.name())) {
+        if (stateMachineType == DefaultStateMachine.DOMAIN) {
             stateOutput = DefaultStateMachine.valueOf(stateName).runState(message);
         } else {
             throw new IllegalArgumentException(String.format("Invalid state machine type: %s", stateMachineType));

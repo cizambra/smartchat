@@ -5,6 +5,7 @@ import com.pxw.smartchat.model.processing.librarian.Librarian;
 import com.pxw.smartchat.model.processing.parser.Parser;
 import com.pxw.smartchat.model.processing.statemachine.StateMachine;
 import com.pxw.smartchat.model.processing.statemachine.component.state.State;
+import com.pxw.smartchat.model.processing.statemachine.impl.DefaultStateMachine;
 import lombok.RequiredArgsConstructor;
 
 import static com.pxw.smartchat.config.bot.Bot.Response.NOT_A_QUESTION;
@@ -32,6 +33,6 @@ public class MessageReceived implements State {
             nextState = NO_QUESTION_MATCHED.name();
         }
 
-        return StateMachine.processMessage(new StateMessage(reply, nextState, StateMachineType.DEFAULT.name()));
+        return StateMachine.processMessage(new StateMessage(reply, nextState, DefaultStateMachine.DOMAIN));
     }
 }

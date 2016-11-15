@@ -4,6 +4,7 @@ import com.pxw.smartchat.config.exception.librarian.AnswerNotFoundException;
 import com.pxw.smartchat.model.messaging.impl.StateMessage;
 import com.pxw.smartchat.model.processing.librarian.Librarian;
 import com.pxw.smartchat.model.processing.statemachine.component.state.State;
+import com.pxw.smartchat.model.processing.statemachine.impl.DefaultStateMachine;
 import lombok.RequiredArgsConstructor;
 
 import static com.pxw.smartchat.config.bot.Bot.Response.*;
@@ -16,7 +17,7 @@ public class NoAnswerFound implements State {
     @Override
     public StateMessage run(String question) throws Exception {
         final String nextState = QUESTION_REVIEWED.name();
-        final String nextDomain = StateMachineType.DEFAULT.name();
+        final String nextDomain = DefaultStateMachine.DOMAIN;
         String reply;
 
         try {

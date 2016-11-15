@@ -4,13 +4,14 @@ import com.pxw.smartchat.config.exception.librarian.AnswerNotFoundException;
 import com.pxw.smartchat.model.messaging.impl.StateMessage;
 import com.pxw.smartchat.model.processing.librarian.Librarian;
 import com.pxw.smartchat.model.processing.statemachine.component.state.State;
+import com.pxw.smartchat.model.processing.statemachine.impl.DefaultStateMachine;
 import lombok.RequiredArgsConstructor;
 
 import static com.pxw.smartchat.config.bot.Bot.Response.*;
 import static com.pxw.smartchat.model.processing.statemachine.impl.DefaultStateMachine.*;
 
 /**
- * This event registers when an answer to a question has been found in
+ * This state registers when an answer to a question has been found in
  * the cache (this cache can be a DB table, plain text file, etc.) and
  * returns the message to be sent to the user.
  */
@@ -21,7 +22,7 @@ public class CachedAnswerFound implements State {
     @Override
     public StateMessage run(String question) throws Exception {
         final String nextState = MESSAGE_RECEIVED.name();
-        final String nextDomain = StateMachineType.DEFAULT.name();
+        final String nextDomain = DefaultStateMachine.DOMAIN;
         String reply;
 
         try {
