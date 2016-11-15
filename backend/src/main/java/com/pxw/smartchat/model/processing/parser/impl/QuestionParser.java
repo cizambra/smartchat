@@ -1,6 +1,7 @@
-package com.pxw.smartchat.model.processing;
+package com.pxw.smartchat.model.processing.parser.impl;
 
 import com.pxw.smartchat.config.exception.ParserException;
+import com.pxw.smartchat.model.processing.parser.Parser;
 import lombok.NonNull;
 
 import java.util.regex.Matcher;

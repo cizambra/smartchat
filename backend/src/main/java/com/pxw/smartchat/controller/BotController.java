@@ -2,10 +2,10 @@ package com.pxw.smartchat.controller;
 
 import com.pxw.smartchat.config.bot.Bot;
 import com.pxw.smartchat.config.system.Route;
-import com.pxw.smartchat.model.ChatMessage;
-import com.pxw.smartchat.model.Message;
-import com.pxw.smartchat.model.statemachine.DefaultStateMachine;
-import com.pxw.smartchat.model.statemachine.StateMachine;
+import com.pxw.smartchat.model.messaging.impl.StateMessage;
+import com.pxw.smartchat.model.messaging.Message;
+import com.pxw.smartchat.model.processing.statemachine.impl.DefaultStateMachine;
+import com.pxw.smartchat.model.processing.statemachine.StateMachine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Controller;
 
 @Controller
 public class BotController {
-    private final String STARTING_STATE = DefaultStateMachine.CONVERSATION_STARTED.name();
+    private final String STARTING_STATE = DefaultStateMachine.MESSAGE_RECEIVED.name();
     private final String STARTING_DOMAIN = StateMachine.StateMachineType.DEFAULT.name();
 
     @Autowired
@@ -22,16 +22,16 @@ public class BotController {
 
     @MessageMapping(Route.HALO)
     @SendTo(Route.INCOMING_BOT_MSG)
-    public ChatMessage startConversation() throws Exception {
+    public StateMessage startConversation() throws Exception {
         final String welcomeMsg = Bot.Response.WELCOME.getMessage();
         waitForBotReply(welcomeMsg);
-        return new ChatMessage(welcomeMsg, STARTING_STATE, STARTING_DOMAIN);
+        return new StateMessage(welcomeMsg, STARTING_STATE, STARTING_DOMAIN);
     }
 
     @MessageMapping(Route.INCOMING_USER_MSG)
     @SendTo(Route.INCOMING_BOT_MSG)
-    public ChatMessage incomingUserMessage(final ChatMessage payload) throws Exception {
-        final ChatMessage botReply = StateMachine.processMessage(payload);
+    public StateMessage incomingUserMessage(final StateMessage payload) throws Exception {
+        final StateMessage botReply = StateMachine.processMessage(payload);
         waitForBotReply(payload.getBody());
         return botReply;
     }

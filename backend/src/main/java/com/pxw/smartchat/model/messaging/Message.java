@@ -1,4 +1,4 @@
-package com.pxw.smartchat.model;
+package com.pxw.smartchat.model.messaging;
 
 import lombok.NoArgsConstructor;
 import lombok.NonNull;

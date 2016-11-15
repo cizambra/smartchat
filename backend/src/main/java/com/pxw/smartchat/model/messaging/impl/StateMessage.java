@@ -1,5 +1,6 @@
-package com.pxw.smartchat.model;
+package com.pxw.smartchat.model.messaging.impl;
 
+import com.pxw.smartchat.model.messaging.Message;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
@@ -14,12 +15,12 @@ import lombok.NonNull;
  * represents the state the bot have at the moment of sending the message.
  */
 @NoArgsConstructor
-public class ChatMessage extends Message {
+public class StateMessage extends Message {
     private @NonNull String state;
     private @NonNull String domain;
 
-    public ChatMessage(@NonNull String body, @NonNull String state, @NonNull String domain) {
-        super(body);
+    public StateMessage(@NonNull String payload, @NonNull String state, @NonNull String domain) {
+        super(payload);
         this.state = state;
         this.domain = domain;
     }

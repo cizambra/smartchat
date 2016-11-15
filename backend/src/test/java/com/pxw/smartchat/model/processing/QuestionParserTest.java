@@ -1,6 +1,7 @@
 package com.pxw.smartchat.model.processing;
 
 import com.pxw.smartchat.config.exception.ParserException;
+import com.pxw.smartchat.model.processing.parser.impl.QuestionParser;
 import lombok.NonNull;
 import org.junit.Test;
 

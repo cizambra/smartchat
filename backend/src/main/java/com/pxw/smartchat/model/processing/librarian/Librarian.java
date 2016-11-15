@@ -1,4 +1,4 @@
-package com.pxw.smartchat.model.librarian;
+package com.pxw.smartchat.model.processing.librarian;
 
 import java.util.List;
 

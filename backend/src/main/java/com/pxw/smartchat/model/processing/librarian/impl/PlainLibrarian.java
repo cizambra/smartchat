@@ -1,5 +1,6 @@
-package com.pxw.smartchat.model.librarian;
+package com.pxw.smartchat.model.processing.librarian.impl;
 
+import com.pxw.smartchat.model.processing.librarian.Librarian;
 import lombok.NonNull;
 
 import java.util.List;
@@ -7,12 +8,12 @@ import java.util.List;
 public class PlainLibrarian implements Librarian {
     @Override
     public Boolean questionExists(final @NonNull String question) {
-        return true;
+        return false;
     }
 
     @Override
     public Boolean similarQuestionsExist(final @NonNull String question) {
-        return false;
+        return true;
     }
 
     @Override

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean id="questionMatched"
+          class="com.pxw.smartchat.model.processing.statemachine.component.state.impl.QuestionMatched">
+        <constructor-arg name="librarian" ref="plainLibrarian"/>
+    </bean>
+
+    <bean id="messageReceived"
+          class="com.pxw.smartchat.model.processing.statemachine.component.state.impl.MessageReceived">
+        <constructor-arg name="librarian" ref="plainLibrarian"/>
+        <constructor-arg name="parser" ref="questionParser" />
+    </bean>
+
+    <bean id="noQuestionMatched"
+          class="com.pxw.smartchat.model.processing.statemachine.component.state.impl.NoQuestionMatched"/>
+
+    <bean id="cachedAnswerFound"
+          class="com.pxw.smartchat.model.processing.statemachine.component.state.impl.CachedAnswerFound">
+        <constructor-arg name="librarian" ref="plainLibrarian"/>
+    </bean>
+
+    <bean id="similarQuestionsFound"
+          class="com.pxw.smartchat.model.processing.statemachine.component.state.impl.SimilarQuestionsFound">
+        <constructor-arg name="librarian" ref="plainLibrarian"/>
+    </bean>
+
+    <bean id="noAnswerFound"
+          class="com.pxw.smartchat.model.processing.statemachine.component.state.impl.NoAnswerFound">
+        <constructor-arg name="librarian" ref="plainLibrarian"/>
+    </bean>
+
+    <bean id="questionReviewed"
+          class="com.pxw.smartchat.model.processing.statemachine.component.state.impl.QuestionReviewed"/>
+
+    <bean id="plainLibrarian" class="com.pxw.smartchat.model.processing.librarian.impl.PlainLibrarian"/>
+    <bean id="questionParser" class="com.pxw.smartchat.model.processing.parser.impl.QuestionParser"/>
+</beans>
