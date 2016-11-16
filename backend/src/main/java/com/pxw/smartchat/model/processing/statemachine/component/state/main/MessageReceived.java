@@ -1,15 +1,15 @@
-package com.pxw.smartchat.model.processing.statemachine.component.state.impl;
+package com.pxw.smartchat.model.processing.statemachine.component.state.main;
 
 import com.pxw.smartchat.model.messaging.impl.StateMessage;
 import com.pxw.smartchat.model.processing.librarian.Librarian;
 import com.pxw.smartchat.model.processing.parser.Parser;
 import com.pxw.smartchat.model.processing.statemachine.StateMachine;
 import com.pxw.smartchat.model.processing.statemachine.component.state.State;
-import com.pxw.smartchat.model.processing.statemachine.impl.DefaultStateMachine;
+import com.pxw.smartchat.model.processing.statemachine.impl.MainStateMachine;
 import lombok.RequiredArgsConstructor;
 
 import static com.pxw.smartchat.config.bot.Bot.Response.NOT_A_QUESTION;
-import static com.pxw.smartchat.model.processing.statemachine.impl.DefaultStateMachine.*;
+import static com.pxw.smartchat.model.processing.statemachine.impl.MainStateMachine.*;
 
 /**
  * The user has said something, this state checks if that something is a question or not. If it
@@ -33,6 +33,6 @@ public class MessageReceived implements State {
             nextState = NO_QUESTION_MATCHED.name();
         }
 
-        return StateMachine.processMessage(new StateMessage(reply, nextState, DefaultStateMachine.DOMAIN));
+        return StateMachine.processMessage(new StateMessage(reply, nextState, MainStateMachine.DOMAIN));
     }
 }

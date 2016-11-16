@@ -39,8 +39,9 @@ public class Bot {
         ANSWER_FROM_BASE_NOT_EXISTS("I couldn't find your answer in our knowledge base, if you really need to answer " +
                 "this question, please email my team with your question. In the meantime, if I can " +
                 "help you with something else, please provide me a new question."),
-        NOT_A_QUESTION("Well, it seems that it is not a question. If I can help you with something else, " +
-                "please provide me a new question.");
+        NOT_A_QUESTION("I cannot recognize your question :(. If you want, you can try again using " +
+                "\"(What|which)\" question format, followed by a question mark (?). If I can help you with " +
+                "something else, please provide me a new question.");
 
         private @NonNull String message;
 

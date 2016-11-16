@@ -6,36 +6,22 @@
     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
     <bean id="questionMatched"
-          class="com.pxw.smartchat.model.processing.statemachine.component.state.impl.QuestionMatched">
-        <constructor-arg name="librarian" ref="plainLibrarian"/>
-    </bean>
+          class="com.pxw.smartchat.model.processing.statemachine.component.state.main.QuestionMatched"/>
 
     <bean id="messageReceived"
-          class="com.pxw.smartchat.model.processing.statemachine.component.state.impl.MessageReceived">
+          class="com.pxw.smartchat.model.processing.statemachine.component.state.main.MessageReceived">
         <constructor-arg name="librarian" ref="plainLibrarian"/>
         <constructor-arg name="parser" ref="questionParser" />
     </bean>
 
     <bean id="noQuestionMatched"
-          class="com.pxw.smartchat.model.processing.statemachine.component.state.impl.NoQuestionMatched"/>
+          class="com.pxw.smartchat.model.processing.statemachine.component.state.main.NoQuestionMatched"/>
 
-    <bean id="cachedAnswerFound"
-          class="com.pxw.smartchat.model.processing.statemachine.component.state.impl.CachedAnswerFound">
-        <constructor-arg name="librarian" ref="plainLibrarian"/>
-    </bean>
+    <bean id="whatQuestionFound"
+          class="com.pxw.smartchat.model.processing.statemachine.component.state.what.WhatQuestionFound"/>
 
-    <bean id="similarQuestionsFound"
-          class="com.pxw.smartchat.model.processing.statemachine.component.state.impl.SimilarQuestionsFound">
-        <constructor-arg name="librarian" ref="plainLibrarian"/>
-    </bean>
-
-    <bean id="noAnswerFound"
-          class="com.pxw.smartchat.model.processing.statemachine.component.state.impl.NoAnswerFound">
-        <constructor-arg name="librarian" ref="plainLibrarian"/>
-    </bean>
-
-    <bean id="questionReviewed"
-          class="com.pxw.smartchat.model.processing.statemachine.component.state.impl.QuestionReviewed"/>
+    <bean id="whichQuestionFound"
+          class="com.pxw.smartchat.model.processing.statemachine.component.state.which.WhichQuestionFound"/>
 
     <bean id="plainLibrarian" class="com.pxw.smartchat.model.processing.librarian.impl.PlainLibrarian"/>
     <bean id="questionParser" class="com.pxw.smartchat.model.processing.parser.impl.QuestionParser"/>
