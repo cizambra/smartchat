@@ -52,32 +52,12 @@ public final class KeywordExtractor {
         for (ListIterator<String> iter = keywordSet.listIterator(); iter.hasNext();) {
             String word = iter.next();
             if (isStepword(word)) {
-                iter.set("*");
-            }
-        }
-
-        final String phraseWithBannedWords = String.join(" ", keywordSet).replaceAll("\\* \\*", "**");
-        keywordSet = new ArrayList<>(Arrays.asList(phraseWithBannedWords.split("\\*")));
-
-        for (ListIterator<String> iter = keywordSet.listIterator(); iter.hasNext();) {
-            String word = iter.next();
-            if (word.equals("")) {
                 iter.remove();
             }
         }
 
         keywordSet.replaceAll(String::toLowerCase);
         keywordSet.replaceAll(String::trim);
-        return keywordSet;
-    }
-
-    public ArrayList<String> keywordsWithout(ArrayList<String> keywordSet, ArrayList<String> bannedKeywords) {
-        for (ListIterator<String> iter = keywordSet.listIterator(); iter.hasNext();) {
-            String word = iter.next();
-            if (isBanned(word, bannedKeywords)) {
-                iter.remove();
-            }
-        }
         return keywordSet;
     }
 
@@ -89,15 +69,5 @@ public final class KeywordExtractor {
             }
         }
         return keywordSet;
-    }
-
-    public Boolean isBanned(String word, ArrayList<String> banList) {
-        for (ListIterator<String> iter = banList.listIterator(); iter.hasNext();) {
-            String bannedWord = iter.next();
-            if (bannedWord.equals(word)) {
-                return true;
-            }
-        }
-        return false;
     }
 }

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entities>
+    <entity name="purchase order"
+            description="a buyer-generated document that authorizes a purchase transaction.
+            When accepted by the seller, it becomes a contract binding on both parties.
+            A purchase order sets forth the descriptions, quantities, prices, discounts, payment terms,
+            date of performance or shipment, other associated terms and conditions, and
+            identifies a specific seller. Also called order.">
+        <keywords>
+            <keyword value="po"/>
+            <keyword value="purchasing"/>
+            <keyword value="order"/>
+            <keyword value="purchase"/>
+        </keywords>
+        <relationships>
+            <relation ref="isbn"/>
+        </relationships>
+    </entity>
+    <entity name="isbn" description="a unique serial number for items">
+        <keywords>
+            <keyword value="isbn"/>
+            <keyword value="fnsku"/>
+        </keywords>
+        <relationships>
+            <relation ref="purchase order"/>
+        </relationships>
+    </entity>
+</entities>
