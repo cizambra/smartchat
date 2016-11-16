@@ -18,14 +18,14 @@ import static com.pxw.smartchat.model.processing.statemachine.impl.MainStateMach
 @RequiredArgsConstructor
 public class MessageReceived implements State {
     protected final Librarian librarian;
-    protected final Parser parser;
+    protected final Parser questionParser;
 
     @Override
     public StateMessage run(String payload) throws Exception {
         String reply, nextState;
 
-        if (parser.matches(payload)) {
-            final String question = parser.getPayloadFrom(payload);
+        if (questionParser.matches(payload)) {
+            final String question = questionParser.getPayloadFrom(payload);
             reply = question;
             nextState = QUESTION_MATCHED.name();
         } else {

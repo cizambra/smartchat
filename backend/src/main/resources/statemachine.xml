@@ -11,7 +11,7 @@
     <bean id="messageReceived"
           class="com.pxw.smartchat.model.processing.statemachine.component.state.main.MessageReceived">
         <constructor-arg name="librarian" ref="plainLibrarian"/>
-        <constructor-arg name="parser" ref="questionParser" />
+        <constructor-arg name="questionParser" ref="questionParser" />
     </bean>
 
     <bean id="noQuestionMatched"
