@@ -41,4 +41,10 @@ public class TextParserTest {
             System.out.println(TextParser.extractQuestions(TextParser.getSentences((String) pair.getKey())));
         }
     }
+
+    @Test
+    public void testTokenization() {
+        final ArrayList<String> tokens = TextParser.tokenize("Hello hello. I don't know why you say good bye, I said hello.");
+        System.out.println(tokens);
+    }
 }

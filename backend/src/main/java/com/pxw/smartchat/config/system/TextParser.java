@@ -47,4 +47,15 @@ public class TextParser {
         final Matcher m = compiledPattern.matcher(sentence);
         return m.matches();
     }
+
+    public static ArrayList<String> tokenize(final String text) {
+        final ArrayList<String> tokens = new ArrayList<>();
+
+        final Document doc = new Document(text);
+        for (Sentence sent : doc.sentences()) {
+            tokens.addAll(sent.words());
+        }
+
+        return tokens;
+    }
 }

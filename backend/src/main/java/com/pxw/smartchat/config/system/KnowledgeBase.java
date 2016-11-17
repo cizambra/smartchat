@@ -105,6 +105,9 @@ public class KnowledgeBase {
                 }
             }
 
+            // The weight starts differentiating more in this point.
+            weight += getEntityWeight(entity, words);
+
             // If there is at least one coincidence, the entity should be returned
             // into the table.
             if (weight > 0) {
@@ -113,6 +116,19 @@ public class KnowledgeBase {
         }
 
         return weightedEntities;
+    }
+
+    private Double getEntityWeight(final Entity entity, final ArrayList<String> words) {
+        /* final ArrayList<String> descriptionWords;
+        final Integer wordsOnText = words.stream().collect(groupingBy(Function.identity(), counting()));
+        Map<String, Integer> frequencyMap = words.stream()
+                                                 .collect(toMap(
+                                                         s -> s, // key is the word
+                                                         s -> 1, // value is 1
+                                                         Integer::sum));
+        Double weight = 0.0;
+        */
+        return 0.0;
     }
 
     public Entity getEntity(ArrayList<String> words) {
