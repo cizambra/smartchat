@@ -21,6 +21,6 @@ public class KnowledgeBaseTest {
     public void testSearch() {
         final String[] array = {"is", "a", "po"};
         final ArrayList<String> words = new ArrayList<>(Arrays.asList(array));
-        final Entity entity = KnowledgeBase.getInstance().searchEntity(words);
+        final Entity entity = KnowledgeBase.getInstance().getEntity(words);
     }
 }

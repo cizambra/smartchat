@@ -11,7 +11,9 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.ListIterator;
+import java.util.Map;
 
 public class KnowledgeBase {
     private static final KnowledgeBase instance = new KnowledgeBase();
@@ -88,25 +90,41 @@ public class KnowledgeBase {
         return instance;
     }
 
-    public Entity searchEntity(ArrayList<String> words) {
-        Entity currentEntity = null;
-        Integer currentMaxCoincidences = 0;
+    public HashMap<Entity, Double> getWeightedEntities(ArrayList<String> words) {
+        final HashMap<Entity, Double> weightedEntities = new HashMap<>();
+
         for (ListIterator<Entity> iter = base.listIterator(); iter.hasNext();) {
             final Entity entity = iter.next();
-            Integer coincidences = 0;
+            // The weight represents the number of coincidences.
+            Double weight = 0.0;
+
             for (ListIterator<String> strIter = words.listIterator(); strIter.hasNext();) {
                 final String keywordValue = strIter.next();
                 if (entity.getValuesFromKeywords().contains(keywordValue)) {
-                    coincidences++;
+                    weight++;
                 }
             }
 
-            if (coincidences > currentMaxCoincidences) {
-                currentEntity = entity;
-                currentMaxCoincidences = coincidences;
+            // If there is at least one coincidence, the entity should be returned
+            // into the table.
+            if (weight > 0) {
+                weightedEntities.put(entity, weight);
             }
         }
 
-        return currentEntity;
+        return weightedEntities;
+    }
+
+    public Entity getEntity(ArrayList<String> words) {
+        final HashMap<Entity, Double> weightedEntities = getWeightedEntities(words);
+        Map.Entry<Entity, Double> maxEntry = null;
+
+        for (Map.Entry<Entity, Double> entry : weightedEntities.entrySet()) {
+            if (maxEntry == null || entry.getValue().compareTo(maxEntry.getValue()) > 0) {
+                maxEntry = entry;
+            }
+        }
+
+        return maxEntry != null ? maxEntry.getKey() : null;
     }
 }

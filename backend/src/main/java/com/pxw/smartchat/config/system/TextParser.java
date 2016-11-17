@@ -42,7 +42,7 @@ public class TextParser {
         final String primaryHelpingVerbs = "am|is|are|was|were|had|has|have|do|does|did|isn't|aren't|don't|didn't" +
                 "|doesn't";
         final String modalHelpingVerbs = "can|could|may|might|will|would|shall|should|must|ought to";
-        final String pattern = String.format("(^.*,\\s*(%s|%s|%s).*)", whWords, primaryHelpingVerbs, modalHelpingVerbs);
+        final String pattern = String.format("(^(.*,\\s*)*(%s|%s|%s).*)", whWords, primaryHelpingVerbs, modalHelpingVerbs);
         final Pattern compiledPattern = Pattern.compile(pattern);
         final Matcher m = compiledPattern.matcher(sentence);
         return m.matches();

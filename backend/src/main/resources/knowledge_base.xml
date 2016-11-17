@@ -7,10 +7,22 @@
             <keyword value="leo"/>
             <keyword value="felidae"/>
             <keyword value="lion"/>
+            <keyword value="cat"/>
         </keywords>
         <relationships>
             <relation with="africa" description="The commonly used term African lion collectively denotes the several subspecies in Africa."/>
             <relation with="cat" description="The lion (Panthera leo) is one of the big cats in the genus Panthera and a member of the family Felidae."/>
+        </relationships>
+    </entity>
+    <entity name="cat"
+            description="The domestic cat[1][5] (Latin: Felis catus) is a small, typically furry, carnivorous mammal. They are often called house cats when kept as indoor pets or simply cats when there is no need to distinguish them from other felids and felines.[6] Cats are often valued by humans for companionship and for their ability to hunt vermin. There are more than 70 cat breeds; different associations proclaim different numbers according to their standards.">
+        <keywords>
+            <keyword value="cat"/>
+            <keyword value="felis"/>
+            <keyword value="catus"/>
+            <keyword value="felidae"/>
+        </keywords>
+        <relationships>
         </relationships>
     </entity>
     <entity name="africa"

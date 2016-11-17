@@ -24,7 +24,7 @@ public class QuestionMatched implements State {
         if (keywordSet.isEmpty()) {
             reply = NOT_A_QUESTION.getMessage();
         } else {
-            final Entity entity = KnowledgeBase.getInstance().searchEntity(keywordSet);
+            final Entity entity = KnowledgeBase.getInstance().getEntity(keywordSet);
             System.out.println(keywordSet);
             if (entity != null) {
                 final String description = entity.getDescription();
