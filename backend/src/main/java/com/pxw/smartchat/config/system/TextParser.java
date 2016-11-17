@@ -1,5 +1,7 @@
 package com.pxw.smartchat.config.system;
 
+import edu.stanford.nlp.simple.*;
+
 import java.util.ArrayList;
 import java.util.ListIterator;
 import java.util.Locale;
@@ -13,16 +15,12 @@ public class TextParser {
      * @return
      */
     public static ArrayList<String> getSentences(final String text) {
-        final String pattern = "([^,.!?]+)[.,!?]*";
-        final Pattern compiledPattern = Pattern.compile(pattern);
-        final Matcher m = compiledPattern.matcher(text);
-        final ArrayList<String> result = new ArrayList<>();
-
-        while (m.find()) {
-            result.add(m.group(1).trim());
+        final ArrayList<String> sentences = new ArrayList<>();
+        Document doc = new Document(text);
+        for (Sentence sent : doc.sentences()) {
+            sentences.add(sent.toString());
         }
-
-        return result;
+        return sentences;
     }
 
     public static ArrayList<String> extractQuestions(final ArrayList<String> sentenceSet) {
@@ -30,6 +28,7 @@ public class TextParser {
 
         for (ListIterator<String> iter = sentenceSet.listIterator(); iter.hasNext();) {
             final String sentence = iter.next();
+            System.out.println(sentence);
             if (isQuestion(sentence.toLowerCase(Locale.ENGLISH))) {
                 questions.add(sentence);
             }
@@ -43,7 +42,7 @@ public class TextParser {
         final String primaryHelpingVerbs = "am|is|are|was|were|had|has|have|do|does|did|isn't|aren't|don't|didn't" +
                 "|doesn't";
         final String modalHelpingVerbs = "can|could|may|might|will|would|shall|should|must|ought to";
-        final String pattern = String.format("(^(%s|%s|%s).*)", whWords, primaryHelpingVerbs, modalHelpingVerbs);
+        final String pattern = String.format("(^.*,\\s*(%s|%s|%s).*)", whWords, primaryHelpingVerbs, modalHelpingVerbs);
         final Pattern compiledPattern = Pattern.compile(pattern);
         final Matcher m = compiledPattern.matcher(sentence);
         return m.matches();

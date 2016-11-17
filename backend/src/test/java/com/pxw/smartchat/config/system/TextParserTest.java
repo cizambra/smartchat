@@ -11,15 +11,15 @@ public class TextParserTest {
 
     static {
         testSet.put("Hello hello. I don't know why you say good bye, I said hello.",
-                new String[]{"Hello hello", "I don't know why you say good bye", "I said hello"});
+                new String[]{"Hello hello.", "I don't know why you say good bye, I said hello."});
         testSet.put("This is a normal sentence. This is a question, isn't it? This is the end.",
-                new String[]{"This is a normal sentence", "This is a question", "isn't it", "This is the end"});
+                new String[]{"This is a normal sentence.", "This is a question, isn't it?", "This is the end."});
         testSet.put("Testing a wh- question. What should be my question.",
-                new String[]{"Testing a wh- question", "What should be my question"});
+                new String[]{"Testing a wh- question.", "What should be my question."});
         testSet.put("Testing a helping verb. May this should be my question.",
-                new String[]{"Testing a helping verb", "May this should be my question"});
+                new String[]{"Testing a helping verb.", "May this should be my question."});
         testSet.put("Testing a helping verb. Can I have a couple of these?",
-                new String[]{"Testing a helping verb", "Can I have a couple of these"});
+                new String[]{"Testing a helping verb.", "Can I have a couple of these?"});
     }
 
     @Test
