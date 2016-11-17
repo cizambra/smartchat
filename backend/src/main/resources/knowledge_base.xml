@@ -8,6 +8,7 @@
             <keyword value="felidae"/>
             <keyword value="lion"/>
             <keyword value="cat"/>
+            <keyword value="animal"/>
         </keywords>
         <relationships>
             <relation with="africa" description="The commonly used term African lion collectively denotes the several subspecies in Africa."/>
@@ -21,6 +22,7 @@
             <keyword value="felis"/>
             <keyword value="catus"/>
             <keyword value="felidae"/>
+            <keyword value="animal"/>
         </keywords>
         <relationships>
         </relationships>

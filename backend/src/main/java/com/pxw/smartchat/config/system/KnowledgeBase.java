@@ -16,66 +16,66 @@ public class KnowledgeBase {
     private static final KnowledgeBase instance = new KnowledgeBase();
     private final ArrayList<Entity> base = new ArrayList<>();
 
+    private class KnowledgeBaseHandler extends DefaultHandler {
+        private Entity currentEntity = null;
+        private ArrayList<Relation> relationships = null;
+        private ArrayList<Keyword> keywords = null;
+
+        public void startElement(final String uri, final String localName, final String qName,
+                                 final Attributes attributes) throws SAXException {
+
+            if (qName.equalsIgnoreCase("entity")) {
+                final String entityName = attributes.getValue("name");
+                final String description = attributes.getValue("description");
+                final Entity entity = new Entity(entityName, description);
+                currentEntity = entity;
+                relationships = new ArrayList<>();
+                keywords = new ArrayList<>();
+            }
+
+            if(qName.equalsIgnoreCase("relation")) {
+                final String reference = attributes.getValue("ref");
+                final String type = attributes.getValue("type");
+                final Relation relation = new Relation(reference);
+                relationships.add(relation);
+            }
+
+            if(qName.equalsIgnoreCase("keyword")) {
+                final String value = attributes.getValue("value");
+                final Keyword keyword = new Keyword(value);
+                keywords.add(keyword);
+            }
+        }
+
+        public void endElement(final String uri, final String localName, final String qName)
+                throws SAXException {
+            if (qName.equalsIgnoreCase("entity")) {
+                currentEntity.setRelationships(relationships);
+                currentEntity.setKeywords(keywords);
+                base.add(currentEntity);
+
+                currentEntity = null;
+                relationships = null;
+                keywords = null;
+            }
+
+        }
+
+        public void characters(char ch[], int start, int length) throws SAXException {
+            // Nothing
+        }
+    }
+
     private KnowledgeBase() {
         final ClassLoader classLoader = getClass().getClassLoader();
         final File knowledgeBase = new File(classLoader.getResource("knowledge_base.xml").getFile());
         final String kbPath = knowledgeBase.getAbsolutePath();
 
         try {
-            SAXParserFactory factory = SAXParserFactory.newInstance();
-            SAXParser saxParser = factory.newSAXParser();
+            final SAXParserFactory factory = SAXParserFactory.newInstance();
+            final SAXParser saxParser = factory.newSAXParser();
 
-            DefaultHandler handler = new DefaultHandler() {
-                private Entity currentEntity = null;
-                private ArrayList<Relation> relationships = null;
-                private ArrayList<Keyword> keywords = null;
-
-                public void startElement(final String uri, final String localName, final String qName,
-                                         final Attributes attributes) throws SAXException {
-
-                    if (qName.equalsIgnoreCase("entity")) {
-                        final String entityName = attributes.getValue("name");
-                        final String description = attributes.getValue("description");
-                        final Entity entity = new Entity(entityName, description);
-                        currentEntity = entity;
-                        relationships = new ArrayList<>();
-                        keywords = new ArrayList<>();
-                    }
-
-                    if(qName.equalsIgnoreCase("relation")) {
-                        final String reference = attributes.getValue("ref");
-                        final String type = attributes.getValue("type");
-                        final Relation relation = new Relation(reference);
-                        relationships.add(relation);
-                    }
-
-                    if(qName.equalsIgnoreCase("keyword")) {
-                        final String value = attributes.getValue("value");
-                        final Keyword keyword = new Keyword(value);
-                        keywords.add(keyword);
-                    }
-                }
-
-                public void endElement(final String uri, final String localName, final String qName)
-                        throws SAXException {
-                    if (qName.equalsIgnoreCase("entity")) {
-                        currentEntity.setRelationships(relationships);
-                        currentEntity.setKeywords(keywords);
-                        base.add(currentEntity);
-
-                        currentEntity = null;
-                        relationships = null;
-                        keywords = null;
-                    }
-
-                }
-
-                public void characters(char ch[], int start, int length) throws SAXException {
-                    // Nothing
-                }
-
-            };
-
+            final DefaultHandler handler = new KnowledgeBaseHandler();
             saxParser.parse(kbPath, handler);
 
         } catch (Exception e) {
@@ -93,7 +93,7 @@ public class KnowledgeBase {
      * @param words
      * @return
      */
-    public Entity getEntity(ArrayList<String> words) {
+    public Entity getEntity(final ArrayList<String> words) {
         final HashMap<Entity, Double> weightedEntities = entitiesWeightMap(words);
         Map.Entry<Entity, Double> maxEntry = null;
 
@@ -198,7 +198,7 @@ public class KnowledgeBase {
      */
     private Map<String, Double> whitelistFrequencyMap(final Set<String> whitelist,
                                                       final Map<String, Double> map) {
-        Map<String, Double> whitelistedMap = new HashMap<>();
+        final Map<String, Double> whitelistedMap = new HashMap<>();
 
         for (final Map.Entry<String, Double> mapEntry : map.entrySet()) {
             if (whitelist.contains(mapEntry.getKey())) {
