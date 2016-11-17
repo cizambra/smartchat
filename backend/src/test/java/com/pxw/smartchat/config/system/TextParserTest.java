@@ -20,6 +20,9 @@ public class TextParserTest {
                 new String[]{"Testing a helping verb.", "May this should be my question."});
         testSet.put("Testing a helping verb. Can I have a couple of these?",
                 new String[]{"Testing a helping verb.", "Can I have a couple of these?"});
+        testSet.put("This is a test of symbols. Are there any problems with \"quotes\", numb3rs and \'quotes\'?",
+                new String[]{"This is a test of symbols.",
+                        "Are there any problems with \"quotes\", numb3rs and \'quotes\'?"});
     }
 
     @Test
@@ -44,7 +47,7 @@ public class TextParserTest {
 
     @Test
     public void testTokenization() {
-        final ArrayList<String> tokens = TextParser.tokenize("Hello hello. I don't know why you say good bye, I said hello.");
+        final ArrayList<String> tokens = TextParser.tokenize(TextParser.cleanSentence("\"ASIN\" is a word 2345!"));
         System.out.println(tokens);
     }
 }

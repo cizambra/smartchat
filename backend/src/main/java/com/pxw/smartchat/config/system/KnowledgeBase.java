@@ -10,10 +10,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.ListIterator;
-import java.util.Map;
+import java.util.*;
 
 public class KnowledgeBase {
     private static final KnowledgeBase instance = new KnowledgeBase();
@@ -90,49 +87,14 @@ public class KnowledgeBase {
         return instance;
     }
 
-    public HashMap<Entity, Double> getWeightedEntities(ArrayList<String> words) {
-        final HashMap<Entity, Double> weightedEntities = new HashMap<>();
-
-        for (ListIterator<Entity> iter = base.listIterator(); iter.hasNext();) {
-            final Entity entity = iter.next();
-            // The weight represents the number of coincidences.
-            Double weight = 0.0;
-
-            for (ListIterator<String> strIter = words.listIterator(); strIter.hasNext();) {
-                final String keywordValue = strIter.next();
-                if (entity.getValuesFromKeywords().contains(keywordValue)) {
-                    weight++;
-                }
-            }
-
-            // The weight starts differentiating more in this point.
-            weight += getEntityWeight(entity, words);
-
-            // If there is at least one coincidence, the entity should be returned
-            // into the table.
-            if (weight > 0) {
-                weightedEntities.put(entity, weight);
-            }
-        }
-
-        return weightedEntities;
-    }
-
-    private Double getEntityWeight(final Entity entity, final ArrayList<String> words) {
-        /* final ArrayList<String> descriptionWords;
-        final Integer wordsOnText = words.stream().collect(groupingBy(Function.identity(), counting()));
-        Map<String, Integer> frequencyMap = words.stream()
-                                                 .collect(toMap(
-                                                         s -> s, // key is the word
-                                                         s -> 1, // value is 1
-                                                         Integer::sum));
-        Double weight = 0.0;
-        */
-        return 0.0;
-    }
-
+    /**
+     * Returns the heaviest entity in the base, given a set of words.
+     *
+     * @param words
+     * @return
+     */
     public Entity getEntity(ArrayList<String> words) {
-        final HashMap<Entity, Double> weightedEntities = getWeightedEntities(words);
+        final HashMap<Entity, Double> weightedEntities = entitiesWeightMap(words);
         Map.Entry<Entity, Double> maxEntry = null;
 
         for (Map.Entry<Entity, Double> entry : weightedEntities.entrySet()) {
@@ -142,5 +104,108 @@ public class KnowledgeBase {
         }
 
         return maxEntry != null ? maxEntry.getKey() : null;
+    }
+
+    /**
+     * Checks for those entities whose keywords contains at least one of the
+     * given words in the word set, and assigns a weight to them.
+     *
+     * @param words The word set given to weight the entities.
+     * @return A (entity, weight) map
+     */
+    public HashMap<Entity, Double> entitiesWeightMap(final ArrayList<String> words) {
+        final HashMap<Entity, Double> weightedEntities = new HashMap<>();
+
+        for (final ListIterator<Entity> entityIter = base.listIterator(); entityIter.hasNext();) {
+            final Entity entity = entityIter.next();
+            Double weight = 0.0;
+
+            for (final ListIterator<String> iter = words.listIterator(); iter.hasNext();) {
+                final String word = iter.next();
+
+                if (entity.getValuesFromKeywords().contains(word)) {
+                    // Each coincidence with the keywords increases the weight.
+                    weight++;
+                }
+            }
+
+            // If there is at least one coincidence, the entity should be returned
+            // into the table.
+            if (weight > 0) {
+                // The weight starts differentiating more in this point.
+                weight += getEntityWeight(entity, words);
+                weightedEntities.put(entity, weight);
+            }
+        }
+
+        return weightedEntities;
+    }
+
+    /**
+     * Returns the weight for an entity in a given condition (a given set of words).
+     *
+     * @param entity The entity being evaluated
+     * @param words The reference words used to calculate the weight for the entity.
+     * @return The weight for the entity
+     */
+    private Double getEntityWeight(final Entity entity, final ArrayList<String> words) {
+        final Map<String, Integer> dedupedWords = TextParser.countAndDedupe(words);
+        final Map<String, Double> descFrequencyMap = getTextFrequencyMap(entity.getDescription());
+        final Map<String, Double> whitelistedMap = whitelistFrequencyMap(dedupedWords.keySet(), descFrequencyMap);
+
+        for (Map.Entry<String, Double> mapEntry : whitelistedMap.entrySet()) {
+            final String word = mapEntry.getKey();
+            final Double freq = mapEntry.getValue();
+
+            // If a word in dedupedWords is more "heavy" means that was mentioned more
+            // times, and that increases their value in the whitelisted map.
+            whitelistedMap.put(word, freq * dedupedWords.get(word));
+        }
+
+        final Double weight = whitelistedMap.values().stream().mapToDouble(Number::doubleValue).sum();
+
+        return weight;
+    }
+
+    /**
+     * Converts a text into a frequency map. That frequency map dedupes the words in the text,
+     * and for each word a number corresponding a the percentage of occurrences in the text for that
+     * word is mapped.
+     *
+     * @param text
+     * @return
+     */
+    private Map<String, Double> getTextFrequencyMap(final String text) {
+        final ArrayList<String> words = TextParser.tokenize(text);
+        final Map<String, Double> result = new HashMap<>();
+        final Integer wordCount = words.size();
+        final Set<String> unique = new HashSet<>(words);
+
+        for (final String key : unique) {
+            final Double frequency = (double) Collections.frequency(words, key) / wordCount;
+            result.put(key, frequency);
+        }
+
+        return result;
+    }
+
+    /**
+     * Returns the map with only the entries whose keys matches with the whitelisted values.
+     *
+     * @param whitelist
+     * @param map
+     * @return
+     */
+    private Map<String, Double> whitelistFrequencyMap(final Set<String> whitelist,
+                                                      final Map<String, Double> map) {
+        Map<String, Double> whitelistedMap = new HashMap<>();
+
+        for (final Map.Entry<String, Double> mapEntry : map.entrySet()) {
+            if (whitelist.contains(mapEntry.getKey())) {
+                whitelistedMap.put(mapEntry.getKey(), mapEntry.getValue());
+            }
+        }
+
+        return whitelistedMap;
     }
 }

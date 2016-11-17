@@ -105,7 +105,8 @@ function messageCanBeSent() {
 }
 
 function messageInTextarea() {
-    return $("#user-message-body").val() != "";
+    var message_body = $("#user-message-body").val();
+    return message_body.trim() != "";
 }
 
 function sendUserMessage() {
