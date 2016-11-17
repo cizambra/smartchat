@@ -1,28 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <entities>
-    <entity name="purchase order"
-            description="a buyer-generated document that authorizes a purchase transaction.
-            When accepted by the seller, it becomes a contract binding on both parties.
-            A purchase order sets forth the descriptions, quantities, prices, discounts, payment terms,
-            date of performance or shipment, other associated terms and conditions, and
-            identifies a specific seller. Also called order.">
+    <entity name="lion"
+            description="The lion (Panthera leo) is one of the big cats in the genus Panthera and a member of the family Felidae. The commonly used term African lion collectively denotes the several subspecies in Africa. With some males exceeding 250 kg (550 lb) in weight,[4] it is the second-largest living cat after the tiger. Wild lions currently exist in sub-Saharan Africa and in India (where an endangered remnant population resides in Gir Forest National Park). In ancient historic times, their range was in most of Africa, including North Africa, and across Eurasia from Greece and southeastern Europe to India. In the late Pleistocene, about 10,000 years ago, the lion was the most widespread large land mammal after humans: Panthera leo spelaea lived in northern and western Europe and Panthera leo atrox lived in the Americas from the Yukon to Peru.">
         <keywords>
-            <keyword value="po"/>
-            <keyword value="purchasing"/>
-            <keyword value="order"/>
-            <keyword value="purchase"/>
+            <keyword value="panthera"/>
+            <keyword value="leo"/>
+            <keyword value="felidae"/>
+            <keyword value="lion"/>
         </keywords>
         <relationships>
-            <relation ref="isbn"/>
+            <relation with="africa" description="The commonly used term African lion collectively denotes the several subspecies in Africa."/>
+            <relation with="cat" description="The lion (Panthera leo) is one of the big cats in the genus Panthera and a member of the family Felidae."/>
         </relationships>
     </entity>
-    <entity name="isbn" description="a unique serial number for items">
+    <entity name="africa"
+            description="Africa is the world's second-largest and second-most-populous continent. At about 30.3 million km² (11.7 million square miles) including adjacent islands, it covers six per cent of Earth's total surface area and 20.4 per cent of its total land area.[2] With 1.1 billion people as of 2013, it accounts for about 15% of the world's human population.[1] The continent is surrounded by the Mediterranean Sea to the north, both the Suez Canal and the Red Sea along the Sinai Peninsula to the northeast, the Indian Ocean to the southeast, and the Atlantic Ocean to the west. The continent includes Madagascar and various archipelagos. It contains 54 fully recognized sovereign states (countries), nine territories and two de facto independent states with limited or no recognition.[3]">
         <keywords>
-            <keyword value="isbn"/>
-            <keyword value="fnsku"/>
+            <keyword value="africa"/>
+            <keyword value="continent"/>
         </keywords>
         <relationships>
-            <relation ref="purchase order"/>
+            <relation ref="lion" description="The commonly used term African lion collectively denotes the several subspecies in Africa."/>
         </relationships>
     </entity>
 </entities>

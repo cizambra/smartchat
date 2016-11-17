@@ -213,10 +213,12 @@ himself
 his
 hither
 home
+how
 howbeit
 however
 hundred
 i
+# id
 ie
 if
 i'll
@@ -605,6 +607,7 @@ went
 were
 werent
 we've
+what
 whatever
 what'll
 whats
@@ -620,6 +623,7 @@ wheres
 whereupon
 wherever
 whether
+which
 while
 whim
 whither
@@ -632,6 +636,7 @@ whom
 whomever
 whos
 whose
+why
 widely
 willing
 wish

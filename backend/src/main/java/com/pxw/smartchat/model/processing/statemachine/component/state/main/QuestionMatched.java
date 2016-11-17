@@ -1,35 +1,39 @@
 package com.pxw.smartchat.model.processing.statemachine.component.state.main;
 
 import com.pxw.smartchat.config.system.KeywordExtractor;
+import com.pxw.smartchat.config.system.KnowledgeBase;
+import com.pxw.smartchat.model.knowledge.Entity;
 import com.pxw.smartchat.model.messaging.impl.StateMessage;
-import com.pxw.smartchat.model.processing.statemachine.StateMachine;
 import com.pxw.smartchat.model.processing.statemachine.component.state.State;
 import com.pxw.smartchat.model.processing.statemachine.impl.MainStateMachine;
-import com.pxw.smartchat.model.processing.statemachine.impl.WhatQuestionStateMachine;
-import com.pxw.smartchat.model.processing.statemachine.impl.WhichQuestionStateMachine;
 import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
+
+import static com.pxw.smartchat.config.bot.Bot.Response.ANSWER_NOT_EXISTS;
+import static com.pxw.smartchat.config.bot.Bot.Response.NOT_A_QUESTION;
 
 @RequiredArgsConstructor
 public class QuestionMatched implements State {
     @Override
     public StateMessage run(final String question) throws Exception {
         final ArrayList<String> keywordSet = KeywordExtractor.getInstance().getKeywords(question);
-        String nextState, nextDomain;
+        final String nextState = MainStateMachine.MESSAGE_RECEIVED.name();
+        String reply;
 
-        if (keywordSet.contains("what")) {
-            nextState = WhatQuestionStateMachine.WHAT_QUESTION_FOUND.name();
-            nextDomain = WhatQuestionStateMachine.DOMAIN;
-        } else if (keywordSet.contains("which")) {
-            nextState = WhichQuestionStateMachine.WHICH_QUESTION_FOUND.name();
-            nextDomain = WhichQuestionStateMachine.DOMAIN;
+        if (keywordSet.isEmpty()) {
+            reply = NOT_A_QUESTION.getMessage();
         } else {
-            nextState = MainStateMachine.NO_QUESTION_MATCHED.name();
-            nextDomain = MainStateMachine.DOMAIN;
+            final Entity entity = KnowledgeBase.getInstance().searchEntity(keywordSet);
+            System.out.println(keywordSet);
+            if (entity != null) {
+                final String description = entity.getDescription();
+                reply = String.format("%s", description);
+            } else {
+                reply = ANSWER_NOT_EXISTS.getMessage();
+            }
         }
 
-        // Automatic transition to next state.
-        return StateMachine.processMessage(new StateMessage(question, nextState, nextDomain));
+        return new StateMessage(reply, nextState, MainStateMachine.DOMAIN);
     }
 }

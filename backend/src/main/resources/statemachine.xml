@@ -9,20 +9,8 @@
           class="com.pxw.smartchat.model.processing.statemachine.component.state.main.QuestionMatched"/>
 
     <bean id="messageReceived"
-          class="com.pxw.smartchat.model.processing.statemachine.component.state.main.MessageReceived">
-        <constructor-arg name="librarian" ref="plainLibrarian"/>
-        <constructor-arg name="questionParser" ref="questionParser" />
-    </bean>
+          class="com.pxw.smartchat.model.processing.statemachine.component.state.main.MessageReceived"/>
 
     <bean id="noQuestionMatched"
           class="com.pxw.smartchat.model.processing.statemachine.component.state.main.NoQuestionMatched"/>
-
-    <bean id="whatQuestionFound"
-          class="com.pxw.smartchat.model.processing.statemachine.component.state.what.WhatQuestionFound"/>
-
-    <bean id="whichQuestionFound"
-          class="com.pxw.smartchat.model.processing.statemachine.component.state.which.WhichQuestionFound"/>
-
-    <bean id="plainLibrarian" class="com.pxw.smartchat.model.processing.librarian.impl.PlainLibrarian"/>
-    <bean id="questionParser" class="com.pxw.smartchat.model.processing.parser.impl.QuestionParser"/>
 </beans>

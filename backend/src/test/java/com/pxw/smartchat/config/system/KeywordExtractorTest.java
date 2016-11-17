@@ -31,7 +31,7 @@ public class KeywordExtractorTest {
     @Test
     public void testGetKeywords() {
         final String examplePhrase = "What is the ASIN associated with this purchase order";
-        final String[] keywordArray = {"what", "asin", "associated", "purchase", "order"};
+        final String[] keywordArray = {"asin", "associated", "purchase", "order"};
         final ArrayList<String> keywordSet = new ArrayList<>(Arrays.asList(keywordArray));
 
         assertEquals(keywordSet, KeywordExtractor.getInstance().getKeywords(examplePhrase));

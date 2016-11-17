@@ -14,7 +14,7 @@ public class KnowledgeBaseTest {
 
     @Test
     public void testBase() {
-        System.out.println(KnowledgeBase.getInstance().getBase());
+        // Nothing.
     }
 
     @Test
@@ -22,6 +22,5 @@ public class KnowledgeBaseTest {
         final String[] array = {"is", "a", "po"};
         final ArrayList<String> words = new ArrayList<>(Arrays.asList(array));
         final Entity entity = KnowledgeBase.getInstance().searchEntity(words);
-        System.out.println(entity.getName());
     }
 }

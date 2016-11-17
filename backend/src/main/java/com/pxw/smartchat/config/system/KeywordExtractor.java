@@ -47,12 +47,13 @@ public final class KeywordExtractor {
 
     public ArrayList<String> getKeywords(final String phrase) {
         final String cleanPhrase = cleanPhrase(phrase);
-        ArrayList<String> keywordSet = new ArrayList<>(Arrays.asList(cleanPhrase.split(" ")));
+        final ArrayList<String> wordSet = new ArrayList<>(Arrays.asList(cleanPhrase.split(" ")));
+        final ArrayList<String> keywordSet = new ArrayList<>();
 
-        for (ListIterator<String> iter = keywordSet.listIterator(); iter.hasNext();) {
+        for (ListIterator<String> iter = wordSet.listIterator(); iter.hasNext();) {
             String word = iter.next();
-            if (isStepword(word)) {
-                iter.remove();
+            if (!isStepword(word)) {
+                keywordSet.add(word);
             }
         }
 
