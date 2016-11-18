@@ -1,12 +1,14 @@
 package com.pxw.smartchat.model.knowledge;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.ListIterator;
 
 @RequiredArgsConstructor
+@EqualsAndHashCode
 @Data
 public class Entity {
     final String name;

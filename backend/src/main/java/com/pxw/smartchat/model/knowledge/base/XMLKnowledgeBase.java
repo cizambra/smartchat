@@ -1,8 +1,10 @@
-package com.pxw.smartchat.config.system;
+package com.pxw.smartchat.model.knowledge.base;
 
 import com.pxw.smartchat.model.knowledge.Entity;
 import com.pxw.smartchat.model.knowledge.Keyword;
 import com.pxw.smartchat.model.knowledge.Relation;
+import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -12,18 +14,20 @@ import javax.xml.parsers.SAXParserFactory;
 import java.io.File;
 import java.util.*;
 
-public class KnowledgeBase {
-    private static final KnowledgeBase instance = new KnowledgeBase();
-    private final ArrayList<Entity> base = new ArrayList<>();
+import static com.pxw.smartchat.config.system.TextParser.*;
 
-    private class KnowledgeBaseHandler extends DefaultHandler {
+@Slf4j
+public enum XMLKnowledgeBase implements KnowledgeBase {
+    INSTANCE("knowledge_base.xml");
+
+    private final ArrayList<Entity> base = new ArrayList<>();
+    private class XMLKnowledgeBaseHandler extends DefaultHandler {
         private Entity currentEntity = null;
         private ArrayList<Relation> relationships = null;
         private ArrayList<Keyword> keywords = null;
 
         public void startElement(final String uri, final String localName, final String qName,
-                                 final Attributes attributes) throws SAXException {
-
+                final Attributes attributes) throws SAXException {
             if (qName.equalsIgnoreCase("entity")) {
                 final String entityName = attributes.getValue("name");
                 final String description = attributes.getValue("description");
@@ -58,33 +62,44 @@ public class KnowledgeBase {
                 relationships = null;
                 keywords = null;
             }
-
         }
 
-        public void characters(char ch[], int start, int length) throws SAXException {
-            // Nothing
-        }
+        public void characters(char ch[], int start, int length) throws SAXException {}
     }
 
-    private KnowledgeBase() {
+    @Slf4j
+    /**
+     * Class used as a hack to allow the enum constructor to use
+     * logging.
+     *
+     * http://stackoverflow.com/questions/443980/why-cant-enums-constructor-access-static-fields
+     */
+    private static class Helper {}
+
+    XMLKnowledgeBase(final @NonNull String sourceFilename) {
+        overrideBaseSource(sourceFilename);
+    }
+
+    /**
+     * Gets the base source file and parse it to fill the base in memory.
+     *
+     * @param sourceFilename
+     */
+    public void overrideBaseSource(final @NonNull String sourceFilename) {
         final ClassLoader classLoader = getClass().getClassLoader();
-        final File knowledgeBase = new File(classLoader.getResource("knowledge_base.xml").getFile());
+        final File knowledgeBase = new File(classLoader.getResource(sourceFilename).getFile());
         final String kbPath = knowledgeBase.getAbsolutePath();
+        Helper.log.debug("Setting base source as {}", sourceFilename);
 
         try {
             final SAXParserFactory factory = SAXParserFactory.newInstance();
             final SAXParser saxParser = factory.newSAXParser();
 
-            final DefaultHandler handler = new KnowledgeBaseHandler();
+            final DefaultHandler handler = new XMLKnowledgeBaseHandler();
             saxParser.parse(kbPath, handler);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public static KnowledgeBase getInstance() {
-        return instance;
     }
 
     /**
@@ -93,7 +108,7 @@ public class KnowledgeBase {
      * @param words
      * @return
      */
-    public Entity getEntity(final ArrayList<String> words) {
+    public Entity getHeaviestEntity(final ArrayList<String> words) {
         final HashMap<Entity, Double> weightedEntities = entitiesWeightMap(words);
         Map.Entry<Entity, Double> maxEntry = null;
 
@@ -107,13 +122,31 @@ public class KnowledgeBase {
     }
 
     /**
+     * Looks up for an entity using its name.
+     *
+     * @param name
+     * @return An entity
+     */
+    public Entity getEntityByName(final String name) {
+        for (final ListIterator<Entity> iter = base.listIterator(); iter.hasNext();) {
+            final Entity entity = iter.next();
+
+            if (entity.getName().equals(name)) {
+                return entity;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Checks for those entities whose keywords contains at least one of the
      * given words in the word set, and assigns a weight to them.
      *
      * @param words The word set given to weight the entities.
      * @return A (entity, weight) map
      */
-    public HashMap<Entity, Double> entitiesWeightMap(final ArrayList<String> words) {
+    private HashMap<Entity, Double> entitiesWeightMap(final ArrayList<String> words) {
         final HashMap<Entity, Double> weightedEntities = new HashMap<>();
 
         for (final ListIterator<Entity> entityIter = base.listIterator(); entityIter.hasNext();) {
@@ -122,17 +155,30 @@ public class KnowledgeBase {
 
             for (final ListIterator<String> iter = words.listIterator(); iter.hasNext();) {
                 final String word = iter.next();
+                final ArrayList<String> keywords = entity.getValuesFromKeywords();
 
-                if (entity.getValuesFromKeywords().contains(word)) {
+                log.debug("Checking if word \"{}\" is present in lemmatized form of {}", word, keywords);
+
+                // This assignation is made only for traceability purposes.
+                final ArrayList<String> lemmatizedKeywords = lemmatize(keywords);
+                final Boolean isWordPresent = lemmatizedKeywords.contains(word);
+                if (isWordPresent) {
                     // Each coincidence with the keywords increases the weight.
                     weight++;
                 }
+
+                final String searchStatus = String.format("Word \"{}\" %sfound in {}",
+                        isWordPresent ? "" : "not ");
+                log.debug(searchStatus, word, lemmatizedKeywords);
             }
 
             // If there is at least one coincidence, the entity should be returned
             // into the table.
             if (weight > 0) {
                 // The weight starts differentiating more in this point.
+                log.debug("Searching matches in description of entity \"{}\" for words: {}",
+                        entity.getName(), words);
+
                 weight += getEntityWeight(entity, words);
                 weightedEntities.put(entity, weight);
             }
@@ -149,7 +195,7 @@ public class KnowledgeBase {
      * @return The weight for the entity
      */
     private Double getEntityWeight(final Entity entity, final ArrayList<String> words) {
-        final Map<String, Integer> dedupedWords = TextParser.countAndDedupe(words);
+        final Map<String, Integer> dedupedWords = countAndDedupe(words);
         final Map<String, Double> descFrequencyMap = getTextFrequencyMap(entity.getDescription());
         final Map<String, Double> whitelistedMap = whitelistFrequencyMap(dedupedWords.keySet(), descFrequencyMap);
 
@@ -157,7 +203,7 @@ public class KnowledgeBase {
             final String word = mapEntry.getKey();
             final Double freq = mapEntry.getValue();
 
-            // If a word in dedupedWords is more "heavy" means that was mentioned more
+            // If a word in dedupedWords is "heavier", that means that was mentioned more
             // times, and that increases their value in the whitelisted map.
             whitelistedMap.put(word, freq * dedupedWords.get(word));
         }
@@ -176,7 +222,7 @@ public class KnowledgeBase {
      * @return
      */
     private Map<String, Double> getTextFrequencyMap(final String text) {
-        final ArrayList<String> words = TextParser.tokenize(text);
+        final ArrayList<String> words = getKeywords(text);
         final Map<String, Double> result = new HashMap<>();
         final Integer wordCount = words.size();
         final Set<String> unique = new HashSet<>(words);
@@ -185,7 +231,6 @@ public class KnowledgeBase {
             final Double frequency = (double) Collections.frequency(words, key) / wordCount;
             result.put(key, frequency);
         }
-
         return result;
     }
 
@@ -197,8 +242,10 @@ public class KnowledgeBase {
      * @return
      */
     private Map<String, Double> whitelistFrequencyMap(final Set<String> whitelist,
-                                                      final Map<String, Double> map) {
+            final Map<String, Double> map) {
         final Map<String, Double> whitelistedMap = new HashMap<>();
+
+        log.debug("The frequency map is {}", map);
 
         for (final Map.Entry<String, Double> mapEntry : map.entrySet()) {
             if (whitelist.contains(mapEntry.getKey())) {
@@ -206,6 +253,7 @@ public class KnowledgeBase {
             }
         }
 
+        log.info("The whitelisted map is {}", whitelistedMap);
         return whitelistedMap;
     }
 }

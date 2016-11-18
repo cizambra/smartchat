@@ -6,11 +6,19 @@
     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
     <bean id="questionMatched"
-          class="com.pxw.smartchat.model.processing.statemachine.component.state.main.QuestionMatched"/>
+          class="com.pxw.smartchat.model.processing.statemachine.component.state.main.QuestionMatched">
+        <constructor-arg ref="knowledgeBase"/>
+    </bean>
 
     <bean id="messageReceived"
           class="com.pxw.smartchat.model.processing.statemachine.component.state.main.MessageReceived"/>
 
     <bean id="noQuestionMatched"
           class="com.pxw.smartchat.model.processing.statemachine.component.state.main.NoQuestionMatched"/>
+
+    <bean id="knowledgeBase"
+          class="com.pxw.smartchat.model.knowledge.base.XMLKnowledgeBase" factory-method="valueOf">
+        <constructor-arg value="INSTANCE"/>
+    </bean>
+
 </beans>
