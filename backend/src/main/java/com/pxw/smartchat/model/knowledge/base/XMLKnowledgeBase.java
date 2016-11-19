@@ -14,6 +14,8 @@ import javax.xml.parsers.SAXParserFactory;
 import java.io.File;
 import java.util.*;
 
+import static com.pxw.smartchat.config.bot.Bot.Response.ANSWER_NOT_EXISTS;
+import static com.pxw.smartchat.config.bot.Bot.Response.NOT_A_QUESTION;
 import static com.pxw.smartchat.config.system.TextParser.*;
 
 @Slf4j
@@ -100,6 +102,31 @@ public enum XMLKnowledgeBase implements KnowledgeBase {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Returns a built answer from data in knowledge base.
+     *
+     * @param question
+     * @return
+     */
+    public String getAnswer(final String question) {
+        final ArrayList<String> keywordSet = getKeywords(cleanSentence(question));
+        log.info("Identified keywords from question: {}", keywordSet);
+        final Entity entity = getHeaviestEntity(keywordSet);
+        String reply;
+
+        if (keywordSet.isEmpty()) {
+            reply = NOT_A_QUESTION.getMessage();
+        } else {
+            if (entity != null) {
+                final String description = entity.getDescription();
+                reply = String.format("%s", description);
+            } else {
+                reply = ANSWER_NOT_EXISTS.getMessage();
+            }
+        }
+        return reply;
     }
 
     /**

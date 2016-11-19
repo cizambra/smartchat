@@ -4,11 +4,12 @@ import org.junit.Test;
 
 import java.util.*;
 
-import static org.junit.Assert.assertEquals;
 import static com.pxw.smartchat.config.system.TextParser.*;
+import static org.junit.Assert.assertEquals;
 
 public class TextParserTest {
     private static HashMap<String, String[]> testSet = new HashMap<>();
+    private static HashMap<String, String[]> questionSet = new HashMap<>();
 
     static {
         testSet.put("Hello hello. I don't know why you say good bye, I said hello.",
@@ -24,11 +25,21 @@ public class TextParserTest {
         testSet.put("This is a test of symbols. Are there any problems with \"quotes\", numb3rs and \'quotes\'?",
                 new String[]{"This is a test of symbols.",
                         "Are there any problems with \"quotes\", numb3rs and \'quotes\'?"});
+        testSet.put("This is question1? This is question 2?",
+                new String[]{"This is question1?",
+                        "This is question 2?"});
+
+        questionSet.put("Hello hello. I don't know why you say good bye, I said hello.", new String[] {});
+        questionSet.put("Hello. Are you talking to me?", new String[] {"Are you talking to me?"});
+        questionSet.put("Hi? Are you talking to me?", new String[] {"Are you talking to me?"});
+        questionSet.put("Are you talking to me?", new String[] {"Are you talking to me?"});
+        questionSet.put("Hey, are you talking to me?", new String[] {"Hey, are you talking to me?"});
     }
 
     @Test
     public void testSentenceExtraction() {
-        Iterator iter = testSet.entrySet().iterator();
+        final Iterator iter = testSet.entrySet().iterator();
+
         while (iter.hasNext()) {
             final Map.Entry pair = (Map.Entry) iter.next();
             final String[] sentenceArray = (String[]) pair.getValue();
@@ -39,9 +50,13 @@ public class TextParserTest {
 
     @Test
     public void testQuestionMatching() {
-        Iterator iter = testSet.entrySet().iterator();
+        final Iterator iter = questionSet.entrySet().iterator();
+
         while (iter.hasNext()) {
-            final Map.Entry pair = (Map.Entry) iter.next();
+            final Map.Entry<String, String[]> pair = (Map.Entry) iter.next();
+            final String message = pair.getKey();
+            final ArrayList<String> expectedQuestions = new ArrayList<>(Arrays.asList(pair.getValue()));
+            assertEquals(expectedQuestions, extractQuestions(getSentences(message)));
         }
     }
 
@@ -50,6 +65,7 @@ public class TextParserTest {
         final ArrayList<String> expectedOutputList = new ArrayList<>(Arrays.asList(
                 new String[]{"\"ASIN\"", "is", "a", "word", "2345!"}));
         final ArrayList<String> outputList = tokenize("\"ASIN\" is a word 2345!");
+
         assertEquals(expectedOutputList, outputList);
     }
 
@@ -60,6 +76,7 @@ public class TextParserTest {
         final ArrayList<String> inputList = new ArrayList<>(Arrays.asList(input));
         final ArrayList<String> expectedOutputList = new ArrayList<>(Arrays.asList(expectedOutput));
         final ArrayList<String> outputList = normalize(inputList);
+
         assertEquals(expectedOutputList, outputList);
     }
 
@@ -70,6 +87,7 @@ public class TextParserTest {
         final ArrayList<String> inputList = new ArrayList<>(Arrays.asList(input));
         final ArrayList<String> expectedOutputList = new ArrayList<>(Arrays.asList(expectedOutput));
         final ArrayList<String> outputList = lemmatize(inputList);
+
         assertEquals(expectedOutputList, outputList);
     }
 }

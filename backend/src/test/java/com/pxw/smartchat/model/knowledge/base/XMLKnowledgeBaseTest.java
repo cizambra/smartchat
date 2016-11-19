@@ -15,7 +15,7 @@ public class XMLKnowledgeBaseTest {
 
         final String[] array = {"africa", "lion"};
         final ArrayList<String> words = new ArrayList<>(Arrays.asList(array));
-        final KnowledgeBase base = XMLKnowledgeBase.INSTANCE;
+        final XMLKnowledgeBase base = XMLKnowledgeBase.INSTANCE;
         final Entity entity = base.getHeaviestEntity(words);
         assertEquals(base.getEntityByName("lion"), entity);
     }

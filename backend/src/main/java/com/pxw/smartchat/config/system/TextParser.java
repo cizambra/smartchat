@@ -22,7 +22,6 @@ public enum TextParser {
         final File stopwordBase = new File(classLoader.getResource(stopwordsBase).getFile());
 
         try (Scanner scanner = new Scanner(stopwordBase)) {
-
             while (scanner.hasNextLine()) {
                 String stopword = scanner.nextLine();
 
@@ -33,7 +32,6 @@ public enum TextParser {
 
                 stopwords.add(stopword);
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -66,7 +64,7 @@ public enum TextParser {
         for (ListIterator<String> iter = sentenceSet.listIterator(); iter.hasNext();) {
             final String sentence = iter.next();
             if (isQuestion(sentence.toLowerCase(Locale.ENGLISH))) {
-                questions.add(cleanSentence(sentence));
+                questions.add(sentence);
             }
         }
 
