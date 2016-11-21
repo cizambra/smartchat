@@ -21,7 +21,7 @@
         <constructor-arg ref="baseConnection"/>
     </bean>
 
-    <bean id="baseConnection" class="com.pxw.smartchat.model.knowledge.base.rdf.RDFConnection">
+    <bean id="baseConnection" class="com.pxw.smartchat.model.knowledge.base.rdf.RDFConnection"/>
 
 
     <!--bean id="knowledgeBase" class="com.pxw.smartchat.model.knowledge.base.XMLKnowledgeBase" factory-method="valueOf">
