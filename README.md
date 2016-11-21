@@ -8,6 +8,7 @@ To use the Parser and the RDF repo client to get answers to questions
  
  
  // Parse
+ 
  Parser parser = new Parser();
  
  RDFSentence rdfSentence = parser.parse(sentence8);
@@ -17,6 +18,7 @@ To use the Parser and the RDF repo client to get answers to questions
  
  
  // Ask Repo
+ 
  ProcurementRDFRepository repo = new ProcurementRDFRepository("http://localhost:8080/openrdf-sesame/", "procurement");
  
  String JSONAnswer = repo.ask(rdfQuestion);
