@@ -17,9 +17,14 @@
           class="com.pxw.smartchat.model.processing.statemachine.component.state.main.NoQuestionMatched"/>
 
     <bean id="knowledgeBase"
-          class="com.pxw.smartchat.model.knowledge.base.rdf.RDFKnowledgeBase">
+          class="com.pxw.smartchat.model.knowledge.base.XMLKnowledgeBase">
         <constructor-arg ref="baseConnection"/>
     </bean>
 
-    <bean id="baseConnection" class="com.pxw.smartchat.model.knowledge.base.rdf.RDFConnection"/>
+    <bean id="baseConnection" class="com.pxw.smartchat.model.knowledge.base.rdf.RDFConnection">
+
+
+    <!--bean id="knowledgeBase" class="com.pxw.smartchat.model.knowledge.base.XMLKnowledgeBase" factory-method="valueOf">
+        <constructor-arg value="INSTANCE"/>
+    </bean-->
 </beans>

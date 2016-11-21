@@ -7,8 +7,8 @@ import com.procurement.chatbot.model.RDFSentence;
 import com.procurement.chatbot.parser.Parser;
 import com.procurement.rdf.ProcurementRDFRepository;
 import com.procurement.rdf.model.RDFQuestion;
-import com.pxw.smartchat.model.knowledge.base.rdf.exception.RDFAnswerNotFoundException;
-import com.pxw.smartchat.model.knowledge.base.rdf.exception.RDFMalformedResponseException;
+import com.pxw.smartchat.model.knowledge.base.exception.AnswerNotFoundException;
+import com.pxw.smartchat.model.knowledge.base.exception.MalformedResponseException;
 import com.pxw.smartchat.model.knowledge.base.rdf.response.RDFNotFoundResponse;
 import com.pxw.smartchat.model.knowledge.base.rdf.response.RDFResponse;
 
@@ -34,10 +34,10 @@ public class RDFConnection {
         } catch(final JsonParseException responseParseException) {
             try {
                 final RDFNotFoundResponse mappedError = mapper.readValue(response, RDFNotFoundResponse.class);
-                throw new RDFAnswerNotFoundException(mappedError.getError().toString());
+                throw new AnswerNotFoundException(mappedError.getError().toString());
             } catch (final JsonParseException errorParseException) {
                 final String message = String.format("Malformed response from RDF repository: %s", response);
-                throw new RDFMalformedResponseException(message);
+                throw new MalformedResponseException(message);
             }
         }
     }

@@ -3,6 +3,8 @@ package com.pxw.smartchat.model.knowledge.base;
 import com.pxw.smartchat.model.knowledge.Entity;
 import com.pxw.smartchat.model.knowledge.Keyword;
 import com.pxw.smartchat.model.knowledge.Relation;
+import com.pxw.smartchat.model.knowledge.base.exception.AnswerNotFoundException;
+import com.pxw.smartchat.model.knowledge.base.exception.QuestionNotFoundException;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.xml.sax.Attributes;
@@ -13,9 +15,6 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.File;
 import java.util.*;
-
-import static com.pxw.smartchat.config.bot.Bot.Response.ANSWER_NOT_EXISTS;
-import static com.pxw.smartchat.config.bot.Bot.Response.NOT_A_QUESTION;
 import static com.pxw.smartchat.config.system.TextParser.*;
 
 @Slf4j
@@ -117,13 +116,13 @@ public enum XMLKnowledgeBase implements KnowledgeBase {
         String reply;
 
         if (keywordSet.isEmpty()) {
-            reply = NOT_A_QUESTION.getMessage();
+            throw new QuestionNotFoundException("Question was not recognized");
         } else {
             if (entity != null) {
                 final String description = entity.getDescription();
                 reply = String.format("%s", description);
             } else {
-                reply = ANSWER_NOT_EXISTS.getMessage();
+                throw new AnswerNotFoundException("Entity was not found");
             }
         }
         return reply;
