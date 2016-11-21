@@ -31,7 +31,7 @@ public class Bot {
         WELCOME("Hi I'm PO Bot, how can I help you?"),
         ANSWER_FROM_CACHE("Your question is: %s\nThe answer provided is %s.\nIf I can help you with something " +
                 "else, please provide me a new question."),
-        ANSWER_FROM_CACHE_NOT_EXISTS("Something odd has happened, I cannot find the answer to this question! " +
+        ERROR_UNKNOWN("Something odd has happened, I cannot find the answer to this question! " +
                 "Can you email my team and let them know that I was unable to find the answer to this question?\n" +
                 "In the meantime, if I can help you with something else, please provide me a new question."),
         ANSWER_FROM_BASE("Your question is: %s\nThe answer provided is %s.\nIf I can help you with something else, " +
