@@ -6,7 +6,8 @@ package com.pxw.smartchat.model.knowledge.base.rdf;
  */
 public class RDFClientMock {
     public String makeCall(final String question) {
-        return "{\"type\" : \"purchase order\"," +
-                "\"answer\" : \"Hola\" }";
+        return "{\"entityType\" : \"purchase order\"," +
+                "\"entityId\" : \"1234\"," +
+                "\"answer\" : [\"The lion is awesome.\"] }";
     }
 }

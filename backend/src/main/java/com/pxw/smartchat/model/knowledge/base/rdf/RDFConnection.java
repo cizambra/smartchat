@@ -1,22 +1,31 @@
 package com.pxw.smartchat.model.knowledge.base.rdf;
 
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.io.IOException;
-import java.util.HashMap;
+import com.pxw.smartchat.model.knowledge.base.rdf.exception.RDFAnswerNotFoundException;
+import com.pxw.smartchat.model.knowledge.base.rdf.exception.RDFMalformedResponseException;
+import com.pxw.smartchat.model.knowledge.base.rdf.response.RDFNotFoundResponse;
+import com.pxw.smartchat.model.knowledge.base.rdf.response.RDFResponse;
 
 /**
- * This class will handle the 3rd party RDF client.
+ * This class handles the 3rd party RDF client.
  */
 public class RDFConnection {
     private final RDFClientMock client = new RDFClientMock();
 
-    public HashMap<String, String> query(final String payload) throws IOException {
+    public RDFResponse query(final String payload) throws Exception {
         final String response = client.makeCall(payload);
         final ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(response,
-                                new TypeReference<HashMap<String, Object>>() {});
-
+        try {
+            return mapper.readValue(response, RDFResponse.class);
+        } catch(final JsonParseException responseParseException) {
+            try {
+                final RDFNotFoundResponse mappedError = mapper.readValue(response, RDFNotFoundResponse.class);
+                throw new RDFAnswerNotFoundException(mappedError.getError().toString());
+            } catch (final JsonParseException errorParseException) {
+                final String message = String.format("Malformed response from RDF repository: %s", response);
+                throw new RDFMalformedResponseException(message);
+            }
+        }
     }
 }

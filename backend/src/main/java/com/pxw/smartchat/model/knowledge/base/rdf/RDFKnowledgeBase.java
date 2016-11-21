@@ -1,10 +1,8 @@
 package com.pxw.smartchat.model.knowledge.base.rdf;
 
 import com.pxw.smartchat.model.knowledge.base.KnowledgeBase;
+import com.pxw.smartchat.model.knowledge.base.rdf.response.RDFResponse;
 import lombok.RequiredArgsConstructor;
-
-import java.io.IOException;
-import java.util.HashMap;
 
 @RequiredArgsConstructor
 public class RDFKnowledgeBase implements KnowledgeBase {
@@ -19,7 +17,7 @@ public class RDFKnowledgeBase implements KnowledgeBase {
      */
     @Override
     public String getAnswer(final String question) throws Exception {
-        final HashMap<String, String> response = baseConnection.query(question);
-        return response.get("answer");
+        final RDFResponse response = baseConnection.query(question);
+        return response.answer[0];
     }
 }
