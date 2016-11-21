@@ -85,6 +85,20 @@
             <artifactId>protobuf-java</artifactId>
             <version>3.1.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.procurement</groupId>
+            <artifactId>parser</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/main/resources/lib/ProcurementChatBotParser.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.procurement</groupId>
+            <artifactId>rdf-repository-client</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/main/resources/lib/ProcurementRDFRepositoryClient.jar</systemPath>
+        </dependency>
     </dependencies>
 
   <build>
