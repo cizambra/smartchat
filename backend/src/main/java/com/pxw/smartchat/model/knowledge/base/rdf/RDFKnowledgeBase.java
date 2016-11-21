@@ -18,6 +18,7 @@ public class RDFKnowledgeBase implements KnowledgeBase {
     @Override
     public String getAnswer(final String question) throws Exception {
         final RDFResponse response = baseConnection.query(question);
-        return response.answer[0];
+        final String[] answers = response.getAnswer();
+        return (answers.length > 1) ? String.join("\n", answers) : answers[0];
     }
 }

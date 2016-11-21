@@ -8,6 +8,6 @@ public class RDFClientMock {
     public String makeCall(final String question) {
         return "{\"entityType\" : \"purchase order\"," +
                 "\"entityId\" : \"1234\"," +
-                "\"answer\" : [\"The lion is awesome.\"] }";
+                "\"answer\" : [\"The lion is awesome.\", \"The bear too.\"] }";
     }
 }
